@@ -394,6 +394,14 @@
   svg.addEventListener('pointercancel', zugEnde);
   svg.addEventListener('lostpointercapture', zugEnde);
 
+  /* ---------- Kein Zoomen mit zwei Fingern auf der Spielfläche (Ingo, 12.11.2026) ----------
+     Kinder berühren beim Drehen und Ziehen oft mit zwei Fingern die Fläche, Safari zoomte dann.
+     Nur auf der Spielfläche gesperrt; auf dem Rest der Seite bleibt Zoomen möglich (Barrierefreiheit).
+     gesture… gibt es nur in Safari; touchmove mit zwei Fingern fängt andere Browser ab. */
+  const keinZoom = e => e.preventDefault();
+  for (const art of ['gesturestart', 'gesturechange', 'gestureend']) flaeche.addEventListener(art, keinZoom, { passive: false });
+  flaeche.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+
   /* ---------- Tastatur ---------- */
   svg.addEventListener('focusin', e => { const g = e.target.closest('.tteil'); if (g && !fest[g.dataset.id]) waehlen(g.dataset.id, true); });
   svg.addEventListener('keydown', e => {
