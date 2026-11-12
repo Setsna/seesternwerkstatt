@@ -23,7 +23,11 @@
   const PRO_RUNDE = A.PLAN.leicht.length;
 
   const sagen = t => { live.textContent = ''; setTimeout(() => { live.textContent = t; }, 30); };
-  const zeigeHinweis = (t, vorlesen = false) => { hinweis.textContent = t || ''; if (vorlesen && t) sagen(t); };
+  const zeigeHinweis = (t, vorlesen = false) => {
+    hinweis.textContent = t || '';
+    hinweis.parentElement.classList.toggle('rueckmeldung--leer', !t);   /* leere Blase verstecken, auch ohne :has */
+    if (vorlesen && t) sagen(t);
+  };
   const neueSaat = () => 1 + Math.floor(Math.random() * 999999999);
 
   /* ---------- Was soll gezeigt werden? ---------- */

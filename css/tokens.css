@@ -1,6 +1,7 @@
 /* Seesternwerkstatt: alle Farben, Schriften, Größen und Abstände an einer Stelle.
    Look nach Lernlagune/DESIGN.md: Navy im Licht, Weiß im Glas, helles Liquid Glass, Libre Caslon + Andika.
-   Eigener Akzent: Korallenorange (nur Stella, Stempel, Hauptknopf; immer mit Navy-Text).
+   Eigener Akzent: Korallenorange (Hauptknöpfe, Stempel, Empfehlung, Rundenpunkte, Sprechblase in Hell; immer mit Navy-Text).
+   Formfarben sind davon getrennt (form-3 ist seit Etappe 6b Lavendel).
    Alle Größen sind Entwurfspixel mal --s. Entwurfsfläche: iPad hochkant, 1088 px breit.
    Feste Untergrenzen nur für Tippflächen (48 px) und Text (17 px). */
 :root {
@@ -27,12 +28,12 @@
   --dialog-unten: #0e3554;
 
   /* Eigener Akzent */
-  --koralle: #ff8a5c;          /* Hauptknopf, Stella, Stempel – nur mit Navy-Text (Kontrast 5.7:1, gemessen) */
+  --koralle: #ff8a5c;          /* Akzent (siehe oben) – nur mit Navy-Text (Kontrast 5.7:1, gemessen) */
   --koralle-hell: #ffe3d6;
   --hinweis-hell: #ffd2bd;     /* Hinweistext auf dunklem Glas */
 
-  /* Formfarben für Code-Grafiken (Tangram-Teile, Figuren). Unterscheidung zusätzlich über Muster.
-     Endgültige Prüfung auf Farbschwäche in Etappe 2. */
+  /* Formfarben für Code-Grafiken (Tangram-Teile, Figuren). Unterscheidung zusätzlich über Muster
+     (Streifen, Punkte). Eine Simulation der Farbschwäche wurde nicht gerendert, nur nach Werten und Mustern geprüft. */
   --form-1: #f4b942;   /* Sonnengelb */
   --form-2: #4fb3bf;   /* Lagunentürkis */
   --form-3: #b294dc;   /* Lavendel (Etappe 6b: vorher Koralle, die ist dem Akzent vorbehalten) */
@@ -46,9 +47,9 @@
   --gesperrt: #e3ecf0;                      /* gesperrtes Kästchen (Vorlage beim Bandornament) */
   --papier: var(--form-7);                  /* gefaltetes Papier beim Faltschnitt */
   --text-leise: #46606c;                    /* leiser Text auf heller Platte (Kontrast 6:1) */
-  --form-rand: #0b3155;
+  --form-rand: var(--navy);
   --raster: rgba(11, 49, 85, 0.18);
-  --achse: #0b3155;
+  --achse: var(--navy);
   --achse-linie: #c43d12;            /* Spiegelachse im Malraster, wie die rote Linie im Heft */
   --umriss: rgba(11, 49, 85, 0.2);   /* Fläche der Tangram-Figur auf der hellen Spielfläche */
 

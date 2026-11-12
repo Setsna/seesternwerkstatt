@@ -10,7 +10,7 @@
 (() => {
   'use strict';
   const B = 1240, H = 1754;
-  const NAVY = '#0b3155', LEISE = '#4a6275', LINIE = '#d9d3c2', WELLE = '#2d6f98', KORALLE = '#ff8a5c', KORALLE_HELL = '#ffe3d6';
+  const NAVY = '#0b3155', LEISE = '#46606c', LINIE = '#d9d3c2', WELLE = '#2d6f98', KORALLE = '#ff8a5c', KORALLE_HELL = '#ffe3d6';
   const CASLON = '"Libre Caslon Text", Georgia, serif';
   const ANDIKA = '"Andika", "Trebuchet MS", sans-serif';
   const STUFE = { leicht: 'Leicht', mittel: 'Mittel', knifflig: 'Knifflig' };

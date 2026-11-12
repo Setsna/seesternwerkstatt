@@ -45,6 +45,7 @@
   /* Sichtbarer Hinweis unter den Tasten. vorlesen: auch für Screenreader, aber nicht bei jeder Wiederholung */
   function zeigeHinweis(t, vorlesen = false) {
     hinweis.textContent = t || '';
+    hinweis.parentElement.classList.toggle('rueckmeldung--leer', !t);   /* leere Blase verstecken, auch ohne :has */
     if (vorlesen && t && t !== letzterHinweis) sagen(t);
     letzterHinweis = t || '';
   }
@@ -220,7 +221,7 @@
       const neu = sitzt[id] !== treffer.ziel.key;
       sitzt[id] = treffer.ziel.key;
       zeichnen(id);
-      if (neu) { hinweis.textContent = letzterHinweis = 'Passt!'; sagen('Passt!'); }   /* jedes Mal ansagen */
+      if (neu) { hinweis.textContent = letzterHinweis = 'Passt!'; hinweis.parentElement.classList.remove('rueckmeldung--leer'); sagen('Passt!'); }   /* jedes Mal ansagen */
       fertigPruefen();
       return true;
     }

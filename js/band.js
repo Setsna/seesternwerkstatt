@@ -29,7 +29,11 @@
   const neueSaat = () => 1 + Math.floor(Math.random() * 999999999);
 
   const sagen = t => { live.textContent = ''; setTimeout(() => { live.textContent = t; }, 30); };
-  const zeigeHinweis = (t, vorlesen = false) => { hinweis.textContent = t || ''; if (vorlesen && t) sagen(t); };
+  const zeigeHinweis = (t, vorlesen = false) => {
+    hinweis.textContent = t || '';
+    hinweis.parentElement.classList.toggle('rueckmeldung--leer', !t);   /* leere Blase verstecken, auch ohne :has */
+    if (vorlesen && t) sagen(t);
+  };
   const el = (name, attr) => { const e = document.createElementNS(NS, name); for (const [k, v] of Object.entries(attr)) e.setAttribute(k, v); return e; };
   /* Rundenstand als sechs Kreise (geschafft gefüllt, aktuell weiß). Nur Bild, die Marke sagt es in Worten. */
   function rundenPunkte(nr, n) {
