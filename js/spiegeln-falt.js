@@ -65,7 +65,7 @@
         vorgabe: {}, farben: [1], pruefen, linienKlasse: 'falz', erfolg: 'Richtig aufgeklappt!',
         spiegelBild: () => R.loesung(aufg)
       });
-      zeigeHinweis('Male die ganze Figur, die beim Aufklappen entsteht.');
+      zeigeHinweis('Tippe oder wische über die Kästchen.');
       return api;
     }
 
@@ -155,7 +155,7 @@
         return;
       }
       knoepfe[wahl].classList.add('antwort--falsch');
-      zeigeHinweis(`Diese Figur entsteht nicht. Schau noch einmal.${ersterVersuch ? ' Jetzt hilft dir der Spiegel.' : ''}`, true);
+      zeigeHinweis(`Diese Figur entsteht nicht.${ersterVersuch ? ' Probier den Spiegel!' : ''}`, true);
     }
     /* Spiegel an der Faltlinie: zeigt das Spiegelbild des Stücks, also die aufgeklappte Figur */
     function spiegelZeichnen() {
@@ -186,7 +186,7 @@
     document.querySelector('[data-aktion="zurueck"]').hidden = true;
     document.getElementById('mal-hilfe').textContent = 'Mit der Tabulatortaste erreichst du die drei Figuren. Die Pfeiltasten wechseln die Figur.';
     zeichnen();
-    zeigeHinweis('Welche Figur entsteht beim Aufklappen? Tippe sie an.');
+    zeigeHinweis('Tippe eine Figur an. Dann tippe auf „Fertig?“.');
 
     return { aufg, waehlen, fertigPruefen, get wahl() { return wahl; }, get geschafft() { return geschafft; }, get spiegelAn() { return spiegelAn; } };
   };

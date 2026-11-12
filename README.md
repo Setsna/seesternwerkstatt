@@ -16,7 +16,7 @@ Teil der Lernlagune („Wohin tauchst du heute?“), aber ein eigenständiges Pr
 | Spiegeln und Symmetrie | fertig (lokal): Runden à 6 erzeugte Aufgaben in 3 Stufen (Ergänzen, Achsen finden, Buchstaben, Achsenkreuz, Faltschnitt), Spiegel als Hilfe, Stempel je Stufe |
 | Bandornamente | fertig (lokal): Runden à 6 erzeugte Aufgaben (leicht und mittel Band, knifflig Parkett und Band), Hilfe Baustein, Stempel je Stufe, Erfinde eigenes |
 
-Hosting: noch nicht veröffentlicht (Stand 11.11.2026). Geplant: GitHub Pages aus `main` von `Setsna/seesternwerkstatt`.
+Hosting: GitHub Pages aus `main` von `Setsna/seesternwerkstatt`, live unter https://setsna.github.io/seesternwerkstatt/ (seit 12.11.2026).
 
 ## Ordner
 

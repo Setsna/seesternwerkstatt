@@ -173,14 +173,15 @@
       zeichnen();
       const teile = [];
       const n = r.zuviel.length;
-      if (n) teile.push(n === 1 ? 'Eine Linie ist keine Spiegelachse.' : `${n} Linien sind keine Spiegelachsen.`);
+      /* kurz (Etappe 6c): höchstens zwei knappe Teile */
+      if (n) teile.push(n === 1 ? '1 Linie ist keine Achse' : `${n} Linien sind keine Achsen`);
       if (r.fehlt) {
-        if (keine) teile.push(r.fehlt === 1 ? 'Die Figur hat doch eine Spiegelachse.' : `Die Figur hat doch ${r.fehlt} Spiegelachsen.`);
-        else teile.push(r.fehlt === 1 ? 'Eine Spiegelachse fehlt noch.' : `${r.fehlt} Spiegelachsen fehlen noch.`);
+        if (keine) teile.push(r.fehlt === 1 ? 'die Figur hat doch eine Achse' : `die Figur hat doch ${r.fehlt} Achsen`);
+        else teile.push(r.fehlt === 1 ? '1 Achse fehlt' : `${r.fehlt} Achsen fehlen`);
       }
       /* „Fast!“ nur bei einem Fehler, der Hilfe-Satz nur beim ersten Versuch (Etappe 6b) */
-      const anfang = r.zuviel.length + r.fehlt <= 1 ? 'Fast!' : 'Schau noch einmal genau hin.';
-      zeigeHinweis(`${anfang} ${teile.join(' ')}${ersterVersuch ? ' Jetzt hilft dir der Spiegel.' : ''}`, true);
+      const anfang = r.zuviel.length + r.fehlt <= 1 ? 'Fast!' : 'Schau noch mal:';
+      zeigeHinweis(`${anfang} ${teile.join(', ')}.${ersterVersuch ? ' Probier den Spiegel!' : ''}`, true);
     }
 
     /* ---------- Spiegel: Spiegelbild der Figur an der zuletzt angetippten Linie ---------- */
@@ -239,7 +240,7 @@
     document.getElementById('mal-hilfe').textContent = 'Mit der Tabulatortaste erreichst du die Kreise an den Linien. Die Leertaste wählt eine Linie als Spiegelachse.';
     rasterBauen();
     linienBauen();
-    zeigeHinweis('Tippe die Linien an, die Spiegelachsen sind.');
+    zeigeHinweis('Tippe auf eine Linie oder ihren Kreis.');
 
     /* Für Rauchtest und Fehlersuche */
     return { aufg, waehlen, keineWaehlen, fertigPruefen, linieBei,

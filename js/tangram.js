@@ -447,7 +447,7 @@
   requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.remove('still')));
   if (aufg.ok) {
     svg.setAttribute('aria-label', `Spielfläche mit sieben Tangram-Teilen. Figur: ${def.name}.`);
-    zeigeHinweis('Zieh die Teile in die Figur.');
+    zeigeHinweis('Zieh ein Teil mit dem Finger.');
   } else {
     auftrag.textContent = 'Probiere die Teile aus.';
     zeigeHinweis('Tippe ein Teil an.');

@@ -198,14 +198,14 @@
     pruefen: gemalt => BA.pruefen(aufg, gemalt),
     erfolg: 'Richtig fortgesetzt!',
     hilfe: {
-      name: 'Baustein', satz: 'Jetzt hilft dir der Baustein.',
+      name: 'Baustein', satz: 'Probier den Baustein!',
       an: 'Die Rahmen zeigen, welcher Teil sich wiederholt.', aus: 'Rahmen weg.',
       zeichnen: bausteineZeichnen
     }
   });
   if (parkett) grenze([[aufg.vorlageB, 0], [aufg.vorlageB, aufg.vorlageH], [0, aufg.vorlageH]]);
   else grenze([[aufg.vorlage, 0], [aufg.vorlage, aufg.h]]);
-  zeigeHinweis(parkett ? 'Male rechts und unten weiter. Das Muster wiederholt sich in alle Richtungen.' : 'Male rechts von der dicken Linie weiter. Das Muster wiederholt sich.');
+  zeigeHinweis(parkett ? 'Male rechts und unten weiter.' : 'Male rechts von der dicken Linie.');
   SW.band.band = { aufg, stufe, saat, nr, probe, kb, kh };
   if (SW.rahmenBreite) SW.rahmenBreite();   /* Sprechblase so breit wie der fertige Rahmen */
 })();

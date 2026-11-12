@@ -230,7 +230,6 @@
   });
 
   /* ---------- Prüfen ---------- */
-  const anzahl = (n, eins, viele) => n === 1 ? eins : `${n} ${viele}`;
   function fertigPruefen() {
     if (geschafft) return;
     const r = opt.pruefen ? opt.pruefen(gemalt) : R.pruefen(aufg, gemalt);
@@ -248,15 +247,17 @@
     }
     /* Falsch gemalte Kästchen werden markiert. Wo etwas fehlt, verrät die Seite nicht. */
     for (const k of r.zuviel.concat(r.falscheFarbe)) knopf[k].classList.add('zelle--falsch');
+    /* kurz (Etappe 6c): „9 Kästchen fehlen, 1 zu viel.“ – das Wort „Kästchen“ nur im ersten Teil */
     const teile = [];
-    if (fehlt) teile.push(anzahl(fehlt, 'Ein Kästchen fehlt noch.', 'Kästchen fehlen noch.'));
-    if (r.zuviel.length) teile.push(anzahl(r.zuviel.length, 'Ein Kästchen ist zu viel.', 'Kästchen sind zu viel.'));
-    if (r.falscheFarbe.length) teile.push(anzahl(r.falscheFarbe.length, 'Ein Kästchen hat eine andere Farbe.', 'Kästchen haben eine andere Farbe.'));
+    if (fehlt) teile.push(fehlt === 1 ? '1 Kästchen fehlt' : `${fehlt} Kästchen fehlen`);
+    const k = () => teile.length ? '' : ' Kästchen';
+    if (r.zuviel.length) teile.push(`${r.zuviel.length}${k()} zu viel`);
+    if (r.falscheFarbe.length) teile.push(`${r.falscheFarbe.length}${k()} mit falscher Farbe`);
     /* „Fast!“ nur, wenn wirklich wenig fehlt (1 bis 2 Fehler). Der Hilfe-Satz nur beim ersten Versuch. */
     const fehler = fehlt + r.zuviel.length + r.falscheFarbe.length;
-    const anfang = fehler <= 2 ? 'Fast!' : 'Schau noch einmal genau hin.';
-    const hilfe = ersterVersuch ? ' ' + (opt.hilfe ? opt.hilfe.satz : 'Jetzt hilft dir der Spiegel.') : '';
-    zeigeHinweis(`${anfang} ${teile.join(' ')}${hilfe}`, true);
+    const anfang = fehler <= 2 ? 'Fast!' : 'Schau noch mal:';
+    const hilfe = ersterVersuch ? ' ' + (opt.hilfe ? opt.hilfe.satz : 'Probier den Spiegel!') : '';
+    zeigeHinweis(`${anfang} ${teile.join(', ')}.${hilfe}`, true);
   }
 
   /* ---------- Spiegel (erst nach dem ersten „Fertig?“) ---------- */
