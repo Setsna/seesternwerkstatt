@@ -1,0 +1,683 @@
+/* Seesternwerkstatt: Layout. Alle Werte kommen aus tokens.css.
+   Aufbau nach Lernlagune: Wasser als Grund, Lichtschacht oben, Glasfenster, Randblasen. */
+*, ::before, ::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: hidden; overflow-x: clip; }
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--tiefe);
+  color: var(--weiss);
+  font-family: var(--sans);
+  font-size: var(--text);
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  font-variant-numeric: lining-nums;
+  display: flex;
+  flex-direction: column;
+}
+h1, h2, h3, p, ul { margin: 0; }
+p, li { text-wrap: pretty; }
+a { color: inherit; }
+img, svg { display: block; max-width: 100%; }
+/* Doppelter Fokusring: innen Navy, außen Weiß, sichtbar auf hellem und dunklem Wasser */
+:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; border-radius: 12px; box-shadow: 0 0 0 7px var(--weiss) !important; }
+::selection { background: var(--koralle); color: var(--navy); }
+[hidden] { display: none !important; }
+.nurvorlesen { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Grund, Licht, Blasen: nur Schmuck ---------- */
+/* Gemaltes Wasserbild (Canva). Darunter der Ersatzverlauf, solange das Bild lädt. */
+.grund {
+  position: fixed; inset: 0; z-index: -3;
+  background: url(../bilder/grund-hoch.webp?b=1) 50% 0 / cover no-repeat, var(--grund-ersatz);
+}
+@media (orientation: landscape) {
+  .grund { background-image: url(../bilder/grund-quer.webp?b=1), var(--grund-ersatz); }
+}
+/* Stella im Kopf: weicher Schatten statt Rand */
+.stella {
+  width: calc(190 * var(--s)); min-width: 110px; height: auto;
+  filter: drop-shadow(0 calc(12 * var(--s)) calc(14 * var(--s)) rgba(3, 20, 35, 0.3));
+}
+.licht {
+  position: fixed; z-index: -2; pointer-events: none;
+  top: 0; left: 50%;
+  width: calc(760 * var(--s)); height: calc(470 * var(--s));
+  transform: translateX(-50%);
+  background: radial-gradient(38% 60% at 50% 0%, rgba(255, 252, 235, 0.42), rgba(220, 244, 250, 0.16) 55%, transparent 78%);
+  opacity: 0.55;
+  animation: licht-atmen 11s ease-in-out infinite alternate;
+}
+@keyframes licht-atmen { to { opacity: 1; transform: translateX(-50%) scaleX(1.08); } }
+.blasen { position: fixed; inset: 0; z-index: -2; pointer-events: none; }
+.blasen span {
+  position: absolute; bottom: 0;
+  width: calc(14 * var(--s)); aspect-ratio: 1; border-radius: 50%;
+  border: 1px solid rgba(235, 250, 255, 0.55);
+  background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.7) 0 14%, rgba(200, 238, 250, 0.08) 40%, transparent 70%);
+  opacity: 0;
+  animation: blase-steigt 18s linear infinite;
+}
+.blasen span:nth-child(1) { left: 0.8%; animation-duration: 17s; animation-delay: -2s; }
+.blasen span:nth-child(2) { left: 2.2%; width: calc(9 * var(--s)); animation-duration: 22s; animation-delay: -11s; }
+.blasen span:nth-child(3) { left: 3.4%; width: calc(6 * var(--s)); animation-duration: 15s; animation-delay: -7s; }
+.blasen span:nth-child(4) { right: 0.8%; width: calc(11 * var(--s)); animation-duration: 20s; animation-delay: -4s; }
+.blasen span:nth-child(5) { right: 2.4%; width: calc(7 * var(--s)); animation-duration: 16s; animation-delay: -13s; }
+.blasen span:nth-child(6) { right: 3.4%; width: calc(9 * var(--s)); animation-duration: 24s; animation-delay: -18s; }
+@keyframes blase-steigt {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  10% { opacity: 0.9; }
+  50% { transform: translate3d(calc(10 * var(--s)), -50vh, 0); }
+  85% { opacity: 0.7; }
+  100% { transform: translate3d(calc(-6 * var(--s)), -100vh, 0); opacity: 0; }
+}
+
+/* ---------- Seite ---------- */
+.seite {
+  flex: 1; width: 100%;
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--abstand-gross);
+  padding: calc(64 * var(--s) + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) var(--abstand-gross) max(16px, env(safe-area-inset-left, 0px));
+  overflow-x: clip;
+}
+.seite:focus { outline: none; }
+
+/* Kopf: Wortmarke mit Welle, große Frage im Lichthof */
+.kopf { display: flex; flex-direction: column; align-items: center; text-align: center; gap: calc(14 * var(--s)); color: var(--navy); }
+.wortmarke {
+  font-family: var(--serif); font-size: var(--wortmarke); letter-spacing: -0.02em;
+  color: var(--navy); text-decoration: none;
+  min-height: 48px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.welle { width: max(44px, calc(62 * var(--s))); height: auto; margin-top: 4px; }
+.frage, .hof { position: relative; isolation: isolate; }
+.frage::before, .hof::before {
+  content: ""; position: absolute; inset: -30% -20%; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, var(--hof), var(--hof-rand) 60%, transparent);
+}
+.frage { font-family: var(--serif); font-weight: 500; font-size: var(--h1); line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance; color: var(--navy); }
+.einleitung { max-width: 30em; color: var(--navy-weich); }
+
+/* ---------- Glasfenster ---------- */
+.fenster {
+  position: relative; isolation: isolate;
+  width: var(--fenster-breite);
+  color: var(--weiss);
+  border-radius: var(--ecke);
+  border: 2px solid var(--glas-kante);
+  background: linear-gradient(180deg, var(--glas-text-oben), var(--glas-text-unten));
+  box-shadow: inset 0 2px 0 var(--glas-glanz), inset 0 0 0 2px rgba(255, 255, 255, 0.16),
+    inset 0 0 calc(22 * var(--s)) rgba(200, 240, 255, 0.38), 0 26px 50px -10px var(--glas-schatten);
+  -webkit-backdrop-filter: blur(6px) saturate(140%); backdrop-filter: blur(6px) saturate(140%);
+  padding: calc(48 * var(--s)) calc(56 * var(--s));
+  display: flex; flex-direction: column; gap: var(--abstand);
+}
+.fenster h2 { font-family: var(--serif); font-weight: 500; font-size: var(--h2); line-height: 1.1; }
+.fenster .leise { font-size: var(--klein); }
+.fenster.mitte { align-items: center; text-align: center; }
+.mitte form { width: 100%; display: flex; flex-direction: column; align-items: center; gap: calc(18 * var(--s)); }
+.mitte input[type="text"] { text-align: center; }
+.mitte .knopfreihe { justify-content: center; }
+
+/* ---------- Stationen ---------- */
+.stationen-block { width: min(100%, calc(1180 * var(--s))); display: flex; flex-direction: column; align-items: center; gap: var(--abstand); }
+.stationen { list-style: none; padding: 0; margin: 0; width: 100%; display: grid; gap: calc(36 * var(--s)); grid-template-columns: 1fr; }
+@media (min-width: 640px) { .stationen { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.station {
+  width: 100%; height: 100%;
+  border-radius: calc(80 * var(--s));
+  padding: calc(44 * var(--s)) calc(24 * var(--s)) calc(36 * var(--s));
+  align-items: center; text-align: center; gap: calc(14 * var(--s));
+  font: inherit; color: var(--weiss); text-decoration: none;
+}
+a.station { cursor: pointer; transition: transform 220ms var(--ease), box-shadow 220ms var(--ease); }
+a.station:active { transform: scale(0.975); }
+@media (hover: hover) { a.station:hover { transform: translateY(calc(-6 * var(--s))); } }
+.station__name { min-height: 2.1em; display: flex; align-items: flex-end; justify-content: center; font-family: var(--serif); font-weight: 400; font-size: max(22px, calc(42 * var(--s))); hyphens: manual; max-width: 100%; line-height: 1.05; text-shadow: 0 1px 3px rgba(4, 30, 50, 0.5); }
+.station__linie { width: 70%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent); position: relative; }
+.station__linie::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--koralle); box-shadow: 0 0 8px var(--koralle); }
+.station__satz { font-size: var(--klein); max-width: 16em; }
+/* Motiv: helle Platte, damit Formen und Linien ruhig und kontrastreich stehen */
+.station__bild {
+  width: 100%; max-width: calc(280 * var(--s)); min-width: 140px; aspect-ratio: 1;
+  background: var(--platte); border-radius: calc(36 * var(--s));
+  padding: calc(18 * var(--s));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+.station__bild svg { width: 100%; height: 100%; }
+.station--bald { background: linear-gradient(180deg, var(--nebel), rgba(10, 52, 84, 0.8)); }
+.station--bald .station__bild { opacity: 0.75; }
+.station__status {
+  margin-top: auto;
+  display: inline-flex; align-items: center; gap: .4em;
+  padding: .15em .9em; border-radius: 999px;
+  background: var(--weiss); color: var(--navy); font-weight: 700; font-size: var(--klein);
+}
+.station__status svg { width: 1em; height: 1em; }
+
+/* ---------- Knöpfe ---------- */
+.knopf {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  min-height: var(--ziel-gross); padding: 0 1.4em;
+  border: 0; border-radius: 999px;
+  background: var(--weiss); color: var(--navy);
+  font-family: var(--sans); font-size: max(18px, calc(28 * var(--s))); font-weight: 700;
+  cursor: pointer; text-decoration: none;
+  box-shadow: 0 0 calc(22 * var(--s)) rgba(255, 255, 255, 0.5), 0 10px 22px -6px rgba(3, 20, 35, 0.5);
+  transition: transform 220ms var(--ease);
+}
+.knopf:active { transform: scale(0.96); }
+.knopf.haupt { background: var(--koralle); }
+.knopf.leise-knopf { background: rgba(255, 255, 255, 0.85); }
+.knopf--klein { min-height: var(--ziel); font-size: max(17px, calc(24 * var(--s))); padding: 0 1.1em; }
+.knopf svg { width: 1.1em; height: 1.1em; flex: none; }
+.knopf:disabled { opacity: .6; cursor: default; transform: none; }
+.knopfreihe { display: flex; flex-wrap: wrap; gap: calc(24 * var(--s)); justify-content: center; }
+.kinder-liste { list-style: none; padding: 0; width: 100%; display: grid; gap: calc(20 * var(--s)); grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
+.kinder-liste .knopf { width: 100%; font-family: var(--serif); font-weight: 500; font-size: max(20px, calc(34 * var(--s))); }
+
+/* ---------- Formular ---------- */
+label { font-weight: 700; display: block; }
+input[type="text"] {
+  font: inherit; font-size: max(22px, calc(38 * var(--s)));
+  width: 100%; max-width: 520px; min-height: max(56px, calc(80 * var(--s)));
+  padding: 0 .6em; margin-top: 8px;
+  color: var(--navy); background: rgba(255, 255, 255, 0.94);
+  border: 2px solid var(--glas-kante); border-radius: calc(28 * var(--s));
+  box-shadow: inset 0 2px 6px rgba(3, 20, 35, 0.18);
+}
+.hinweis-feld { min-height: 1.4em; font-weight: 700; color: var(--hinweis-hell); }
+.hinweis-feld:empty { display: none; }
+.klassenwahl { border: 0; margin: 0 auto; padding: 0; min-width: 0; width: 100%; max-width: 520px; display: grid; gap: calc(14 * var(--s)); }
+.klassenwahl legend { padding: 0; margin: 0 auto calc(14 * var(--s)); font-weight: 700; }
+.klassen-knoepfe { display: flex; flex-wrap: wrap; gap: calc(20 * var(--s)); justify-content: center; }
+.klasse-wahl { position: relative; flex: 1 1 0; min-width: 120px; }
+.klasse-wahl input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.klasse-wahl span { display: flex; align-items: center; justify-content: center; min-height: 64px; padding: .4em 1em; border-radius: 16px; border: 3px solid var(--navy); background: var(--weiss); color: var(--navy); font-weight: 700; font-size: max(19px, calc(30 * var(--s))); }
+.klasse-wahl input:checked + span { background: var(--koralle); box-shadow: inset 0 0 0 3px var(--navy); }
+.klasse-wahl input:focus-visible + span { outline: 3px solid var(--navy); outline-offset: 2px; box-shadow: 0 0 0 7px var(--weiss); }
+
+/* ---------- Aufgabenansicht (Stationen) ---------- */
+/* Ruhig: Grund abgedunkelt, keine Blasen, Spielfläche groß, Werkzeuge am Rand */
+/* Oben stärker abgedunkelt: Dort liegt der helle Lichtschacht unter Auftrag und Hinweisen (Kontrast WCAG AA, Etappe 6b) */
+body.aufgabe .grund::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8, 38, 62, 0.78) 0, rgba(8, 38, 62, 0.68) 30%, rgba(8, 38, 62, 0.55) 60%, rgba(8, 38, 62, 0.5) 100%); }
+.aufgabe-seite {
+  flex: 1; width: 100%; display: flex; flex-direction: column; gap: calc(16 * var(--s));
+  padding: calc(16px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px));
+}
+.aufgabe-kopf { display: flex; align-items: center; flex-wrap: wrap; gap: 8px calc(24 * var(--s)); }
+.aufgabe-kopf h1 { font-family: var(--serif); font-weight: 500; font-size: max(26px, calc(48 * var(--s))); line-height: 1.05; }
+.aufgabe-auftrag { font-size: var(--text); flex-basis: 100%; }
+@media (min-width: 700px) { .aufgabe-auftrag { flex-basis: auto; } }
+
+.tangram-buehne { flex: 1; display: flex; flex-direction: column; gap: calc(16 * var(--s)); min-height: 0; }
+/* Rahmen: gibt der Spielfläche ihre Größe. Darin die Fläche (nur die Zeichnung) und darüber die Erfolgskarte. */
+.spielrahmen { position: relative; height: max(360px, calc(100svh - 420px)); }   /* hochkant: bis zu den Werkzeugen (Etappe 6b) */
+.spielflaeche {
+  position: absolute; inset: 0;
+  background: var(--platte);
+  border-radius: calc(36 * var(--s));
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7), 0 20px 40px -14px rgba(3, 20, 35, 0.5);
+  overflow: hidden;
+  touch-action: none;                 /* Ziehen auf dem iPad scrollt nicht die Seite */
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+}
+.spielflaeche svg { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+@media (orientation: landscape) and (min-width: 820px) {
+  .tangram-buehne { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "flaeche werkzeuge" "rueck werkzeuge"; }
+  .tangram-buehne .spielrahmen { grid-area: flaeche; height: auto; min-height: 0; }
+  .tangram-buehne .werkzeuge { grid-area: werkzeuge; }
+  .tangram-buehne .rueckmeldung { grid-area: rueck; }
+}
+
+/* Tangram-Figur: Umriss, bei Stufe leicht mit Teilgrenzen */
+.figur { pointer-events: none; }
+.umriss { fill: var(--umriss); stroke: var(--navy); stroke-width: 0.05; stroke-linejoin: round; }
+.grenze { fill: none; stroke: var(--navy); stroke-opacity: 0.5; stroke-width: 0.03; stroke-dasharray: 0.12 0.09; stroke-linejoin: round; }
+.geschafft .umriss { stroke: var(--koralle); stroke-width: 0.12; }
+/* Erfolgskarte: liegt über der Fläche in der dann leeren Ablage (rechts oder unten, passend zu
+   zonen() in js/tangram.js). Sie hält immer mindestens 12 px Abstand zum Rand der Fläche. */
+.erfolg {
+  position: absolute; z-index: 2;
+  display: grid; justify-items: center; align-items: center; text-align: center; gap: calc(8 * var(--s)) 14px;
+  width: max-content;
+  padding: max(14px, calc(22 * var(--s))) max(18px, calc(30 * var(--s))) max(16px, calc(26 * var(--s)));
+  background: var(--koralle-hell); color: var(--navy);
+  border-radius: max(22px, calc(44 * var(--s)));
+  box-shadow: 0 16px 30px -14px rgba(3, 20, 35, 0.45);
+  animation: erfolg-da 320ms var(--ease) both;
+}
+.erfolg p { margin: 0; }
+/* Spiegeln: Karte bleibt in der Spalte der Werkzeuge (quer schmal), Text bricht um */
+.spiegel-buehne .erfolg--spiegel { width: auto; max-width: 100%; box-sizing: border-box; }
+@media (orientation: landscape) and (min-width: 820px) {
+  .spiegel-buehne .erfolg--spiegel { padding-left: 14px; padding-right: 14px; }
+  .spiegel-buehne .erfolg--spiegel .erfolg__gross { font-size: max(24px, calc(34 * var(--s))); }
+  .spiegel-buehne .erfolg--spiegel .erfolg__knoepfe { flex-direction: column; align-items: stretch; }
+}
+.erfolg__gross { font-family: var(--serif); font-weight: 500; font-size: max(26px, calc(46 * var(--s))); line-height: 1.05; }
+.erfolg img { width: max(72px, calc(120 * var(--s))); height: auto; }
+.erfolg .knopf { margin-top: calc(8 * var(--s)); box-shadow: 0 8px 18px -8px rgba(3, 20, 35, 0.5); }
+/* Breite Fläche: Die Ablage sind die rechten 42 %. Karte mittig darin, nie breiter als die Ablage ohne Rand. */
+[data-lage="quer"] .erfolg {
+  left: 79%; top: 50%; --mitte: translate(-50%, -50%); transform: var(--mitte);
+  max-width: min(42% - 24px, 340px);
+}
+/* Fast quadratische Fläche mit Ablage unten (iPad hoch, Etappe 6c): Karte mittig in der Ablage unter der Figur */
+[data-lage="unten"] .erfolg {
+  left: 50%; top: 77.5%; --mitte: translate(-50%, -50%); transform: var(--mitte);
+  max-width: calc(100% - 24px); max-height: calc(45% - 24px);
+  grid-template-columns: auto auto; justify-items: start; text-align: left;
+}
+[data-lage="unten"] .erfolg picture { grid-row: span 2; }
+[data-lage="unten"] .erfolg__gross { align-self: end; }
+[data-lage="unten"] .erfolg__knoepfe { grid-column: 1 / -1; justify-self: center; }
+[data-lage="unten"] .erfolg__satz { display: none; }
+[data-lage="unten"] .erfolg img { width: max(56px, calc(96 * var(--s))); }
+/* Hohe Fläche (nur Handy hochkant): Die Karte erscheint UNTER der Spielfläche, an der Stelle der
+   Werkzeugleiste (die dann ausgeblendet ist, ohne dass sich etwas verschiebt). So bleibt die Figur frei. */
+.tangram-buehne[data-lage="hoch"].geschafft .werkzeuge { visibility: hidden; }
+[data-lage="hoch"] .erfolg {
+  left: 50%; top: calc(100% + 12px); --mitte: translateX(-50%); transform: var(--mitte);
+  max-width: calc(100% - 24px);
+  grid-template-columns: auto auto; justify-items: start; text-align: left;
+}
+[data-lage="hoch"] .erfolg picture { grid-row: span 2; }
+[data-lage="hoch"] .erfolg__gross { align-self: end; }
+[data-lage="hoch"] .erfolg img { width: max(56px, calc(96 * var(--s))); }
+@keyframes erfolg-da { from { opacity: 0; transform: var(--mitte) scale(0.92); } }
+
+/* Tangram-Teile */
+.tteil { cursor: grab; transition: transform 160ms var(--ease); outline: none; }
+.tteil.zieht, .still .tteil { cursor: grabbing; transition: none; }
+.tteil__kante { fill: none; stroke: var(--form-rand); stroke-width: 0.045; stroke-linejoin: round; }
+.tteil__rahmen { fill: none; stroke: transparent; stroke-width: 0.22; stroke-linejoin: round; }
+.tteil.gewaehlt .tteil__rahmen { stroke: var(--weiss); }
+.tteil.gewaehlt .tteil__kante { stroke-width: 0.08; }
+.tteil.fest { cursor: default; opacity: 0.55; }   /* liegt fest: gedämpft, wirkt nicht wie ein loses Teil (Etappe 6b) */
+.tteil.fest .tteil__kante { stroke-dasharray: none; stroke-width: 0.03; }
+.tteil:focus-visible .tteil__rahmen { stroke: var(--weiss); }
+.tteil:focus-visible .tteil__kante { stroke-width: 0.1; stroke-dasharray: .18 .1; }
+
+/* Werkzeugleiste: unten (hoch) bzw. rechts (quer) */
+.werkzeuge { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: calc(20 * var(--s)); }
+@media (orientation: landscape) and (min-width: 820px) {
+  .werkzeuge { flex-direction: column; flex-wrap: nowrap; justify-content: flex-start; width: max(120px, calc(170 * var(--s))); }
+}
+.werkzeug {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  min-width: max(76px, calc(120 * var(--s))); min-height: max(72px, calc(104 * var(--s)));
+  padding: 8px 12px; border: 0; border-radius: calc(28 * var(--s));
+  background: var(--weiss); color: var(--navy);
+  font: inherit; font-weight: 700; font-size: max(16px, calc(22 * var(--s)));
+  cursor: pointer;
+  box-shadow: 0 10px 22px -8px rgba(3, 20, 35, 0.55);
+  transition: transform 160ms var(--ease);
+}
+.werkzeug svg { width: max(30px, calc(44 * var(--s))); height: max(30px, calc(44 * var(--s))); }
+.werkzeug:active { transform: scale(0.95); }
+.werkzeug--leise { background: rgba(255, 255, 255, 0.82); }
+.werkzeug-hinweis { flex-basis: 100%; text-align: center; font-size: var(--klein); color: var(--weiss); min-height: 1.4em; }
+@media (prefers-reduced-motion: reduce) {
+  .erfolg { animation: none; }
+  .tteil, .werkzeug { transition: none; }
+  .werkzeug:active { transform: none; }
+}
+
+/* ---------- Tangram: Auswahl ---------- */
+.tangram-auswahl { display: flex; flex-direction: column; gap: max(18px, calc(28 * var(--s))); width: min(100%, 1100px); margin: 0 auto; }
+.auswahl-hinweis { background: var(--koralle-hell); color: var(--navy); border-radius: calc(28 * var(--s)); padding: 12px 16px; }
+.auswahl-hinweis a { color: var(--navy); font-weight: 700; display: inline-flex; align-items: center; min-height: 48px; padding: 0 4px; }
+.stufe-block {
+  background: linear-gradient(180deg, var(--glas-text-oben), var(--glas-text-unten));
+  border: 2px solid var(--glas-kante); border-radius: max(24px, calc(48 * var(--s)));
+  padding: max(14px, calc(24 * var(--s))) max(16px, calc(30 * var(--s)));
+  -webkit-backdrop-filter: blur(6px) saturate(140%); backdrop-filter: blur(6px) saturate(140%);
+  display: flex; flex-direction: column; gap: max(12px, calc(18 * var(--s)));
+}
+.stufe-block--empfohlen { border-color: var(--koralle); box-shadow: inset 0 0 0 2px var(--koralle); }
+.stufe-kopf { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; }
+.stufe-kopf h2 { font-family: var(--serif); font-weight: 500; font-size: max(22px, calc(40 * var(--s))); display: flex; align-items: center; gap: 10px; }
+.stufe-punkte { font-family: var(--sans); font-size: 0.55em; letter-spacing: 2px; color: var(--koralle); }
+.stufe-stand { margin-left: auto; font-size: var(--klein); }
+.marke { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: var(--klein); }
+.marke--empfohlen { background: var(--koralle); color: var(--navy); }
+.marke--stempel { background: var(--weiss); color: var(--navy); }
+.marke img { width: 26px; height: 26px; }
+.figur-liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: max(10px, calc(20 * var(--s))); }
+.figur-kachel {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  min-height: 48px; padding: 10px 8px 12px; border-radius: max(18px, calc(32 * var(--s)));
+  background: var(--platte); color: var(--navy); text-decoration: none; font-weight: 700;
+  transition: transform 160ms var(--ease);
+}
+.figur-kachel:active { transform: scale(0.97); }
+.figur-kachel > svg { width: 100%; height: max(80px, calc(150 * var(--s))); }
+.figur-kachel__name { font-size: var(--text); text-align: center; }
+.figur-kachel--geloest { box-shadow: inset 0 0 0 3px var(--koralle); }
+.figur-kachel__geloest { display: inline-flex; align-items: center; gap: 4px; font-size: var(--klein); background: var(--koralle-hell); border-radius: 999px; padding: 2px 10px 2px 6px; }
+.haken { width: 1.1em; height: 1.1em; color: var(--navy); }
+.am-tisch { background: var(--glas-text-oben); border: 2px solid var(--glas-kante); border-radius: max(22px, calc(40 * var(--s))); }
+.am-tisch summary { cursor: pointer; list-style: none; min-height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; }
+.am-tisch summary::-webkit-details-marker { display: none; }
+.am-tisch summary::after { content: ""; flex: none; width: 22px; height: 22px; background: linear-gradient(currentColor, currentColor) center / 20px 3px no-repeat, linear-gradient(currentColor, currentColor) center / 3px 20px no-repeat; }
+.am-tisch[open] summary::after { background: linear-gradient(currentColor, currentColor) center / 20px 3px no-repeat; }
+.am-tisch summary h2 { font-family: var(--serif); font-weight: 500; font-size: max(20px, calc(32 * var(--s))); }
+.am-tisch__inhalt { display: grid; grid-template-columns: max(110px, calc(180 * var(--s))) 1fr; gap: 16px 22px; align-items: start; padding: 0 20px 20px; }
+.am-tisch__inhalt ol { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; }
+.am-tisch__inhalt p { grid-column: 1 / -1; }
+.am-tisch__bild { background: var(--platte); border-radius: 18px; padding: 10px; }
+@media (max-width: 560px) {
+  .figur-liste { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .am-tisch__inhalt { grid-template-columns: 1fr; }
+  .am-tisch__bild { max-width: 160px; }
+}
+
+/* ---------- Tangram: Spiel, Tipp, Erfolg ---------- */
+.auftrag-marke { display: inline-block; background: var(--weiss); color: var(--navy); font-weight: 700; border-radius: 999px; padding: 2px 12px; margin-right: 6px; }
+.tipp-platz { fill: rgba(255, 138, 92, 0.35)   /* = --koralle mit 35 %; color-mix kennen ältere iPads nicht */; stroke: var(--koralle); stroke-width: 0.09; stroke-dasharray: 0.2 0.12; stroke-linejoin: round; }
+.werkzeug--tipp img { width: max(34px, calc(48 * var(--s))); height: auto; }
+.erfolg__stempel { background: var(--weiss); border-radius: 999px; padding: 4px 14px; font-weight: 700; }
+.erfolg__knoepfe { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+[data-lage="hoch"] .erfolg__knoepfe { grid-column: 1 / -1; justify-self: center; }
+/* Hohe, schmale Fläche (Handy hoch) und niedrige Fläche (Handy quer): Karte kompakt.
+   Der Satz „Alle sieben Teile passen“ bleibt für Screenreader in der Ansage. */
+[data-lage="hoch"] .erfolg__satz { display: none; }
+[data-lage="hoch"] .erfolg__stempel { align-self: start; }
+@media (max-height: 480px) {
+  .erfolg { gap: 4px 12px; padding: 10px 14px 12px; }
+  .erfolg img { width: 52px; }
+  .erfolg__satz { display: none; }
+  .erfolg__gross { font-size: 24px; }
+  .erfolg .knopf { margin-top: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { .figur-kachel { transition: none; } .figur-kachel:active { transform: none; } }
+
+/* ---------- Spiegeln: Malraster ---------- */
+/* Bühne als Raster: Malfläche und Werkzeuge. Die Erfolgskarte liegt im Bereich der Werkzeuge,
+   die dann ausgeblendet sind. So verschiebt sich nichts und das Bild bleibt frei. */
+.spiegel-buehne { display: grid; gap: max(12px, calc(20 * var(--s))); grid-template-areas: "raster" "rueck" "werkzeuge"; justify-items: center; align-items: start; }
+@media (orientation: landscape) and (min-width: 820px) {
+  .spiegel-buehne { grid-template-areas: "raster werkzeuge" "rueck werkzeuge"; grid-template-columns: minmax(0, 1fr) max(150px, calc(200 * var(--s))); grid-template-rows: auto 1fr; }
+}
+.spiegel-buehne .werkzeuge { grid-area: werkzeuge; }
+.spiegel-buehne .erfolg--spiegel { grid-area: werkzeuge; position: static; transform: none; animation: none; align-self: center; }
+.spiegel-buehne.geschafft .werkzeuge { visibility: hidden; }
+.malrahmen {
+  grid-area: raster; position: relative;
+  width: min(100% - 2 * var(--rand), calc(62svh * var(--spalten, 8) / var(--zeilen, 8)), 680px);   /* 100 % abzüglich Rand: Breite ohne padding (content-box) */
+  aspect-ratio: var(--spalten, 8) / var(--zeilen, 8);
+  background: var(--platte);
+  border-radius: max(14px, calc(24 * var(--s)));
+  padding: max(8px, calc(12 * var(--s)));
+  box-shadow: 0 20px 40px -14px rgba(3, 20, 35, 0.5);
+  box-sizing: content-box;
+}
+@media (orientation: landscape) and (min-width: 820px) {
+  .malrahmen { width: min(100% - 2 * var(--rand), calc((100svh - 330px) * var(--spalten, 8) / var(--zeilen, 8)), 760px); }   /* Kopf, Blase und Ränder abgezogen (Etappe 6c) */
+}
+.malraster { position: absolute; inset: max(8px, calc(12 * var(--s))); display: grid; grid-template-rows: repeat(var(--zeilen, 8), 1fr);
+  touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.malzeile { display: grid; grid-template-columns: repeat(var(--spalten, 8), 1fr); }
+.zelle {
+  position: relative; margin: 0; padding: 0; min-width: 0; min-height: 0;
+  border: 1px solid rgba(11, 49, 85, 0.2); border-radius: 0;
+  background-color: var(--kaestchen); cursor: pointer;
+}
+.zelle:focus-visible { outline: 3px solid var(--navy); outline-offset: -3px; box-shadow: inset 0 0 0 6px var(--weiss) !important; border-radius: 0; z-index: 1; }
+.zelle--vorgabe { cursor: default; box-shadow: inset 0 0 0 2px rgba(11, 49, 85, 0.45); }
+/* Farben, zusätzlich mit Muster (nicht nur über Farbe unterscheidbar) */
+.f1 { background-color: var(--form-5); }
+.f2 { background-color: var(--form-3); background-image: repeating-linear-gradient(45deg, rgba(11, 49, 85, 0.3) 0 3px, transparent 3px 9px); }
+.f3 { background-color: var(--form-1); background-image: radial-gradient(circle, rgba(11, 49, 85, 0.38) 2.5px, transparent 3px); background-size: 10px 10px; }
+.zelle--falsch::after {
+  content: ""; position: absolute; inset: 18%;
+  background: linear-gradient(45deg, transparent 43%, var(--navy) 43% 57%, transparent 57%), linear-gradient(-45deg, transparent 43%, var(--navy) 43% 57%, transparent 57%);
+  opacity: 0.75; pointer-events: none;
+}
+.malraster__achsen { position: absolute; inset: max(8px, calc(12 * var(--s))); width: calc(100% - 2 * max(8px, calc(12 * var(--s)))); height: calc(100% - 2 * max(8px, calc(12 * var(--s)))); pointer-events: none; overflow: visible; }
+.achse { stroke: var(--achse-linie); stroke-width: 0.09; stroke-linecap: round; }
+.spiegelbild { fill-opacity: 0.4; stroke: var(--navy); stroke-width: 0.04; stroke-dasharray: 0.12 0.08; }
+.sf1 { fill: var(--form-5); } .sf2 { fill: var(--form-3); } .sf3 { fill: var(--form-1); }
+.spiegelbild--muster { fill-opacity: 1; stroke: none; }
+.farbwahl { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.farbknopf { width: max(52px, calc(64 * var(--s))); height: max(52px, calc(64 * var(--s))); border-radius: 50%; border: 3px solid var(--weiss); cursor: pointer; box-shadow: 0 6px 14px -6px rgba(3, 20, 35, 0.6); }
+.farbknopf[aria-checked="true"] { outline: 4px solid var(--weiss); outline-offset: 3px; }
+.farbknopf:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; box-shadow: 0 0 0 9px var(--weiss) !important; border-radius: 50%; }
+.werkzeug--fertig { background: var(--koralle); }
+.werkzeug--spiegel[aria-pressed="true"], .werkzeug--keine[aria-pressed="true"] { background: var(--koralle-hell); box-shadow: inset 0 0 0 3px var(--navy); }
+
+/* ---------- Spiegeln: Achsen finden ---------- */
+.malrahmen { --rand: max(8px, calc(12 * var(--s))); }
+.malrahmen--linien { touch-action: none; -webkit-user-select: none; user-select: none; }
+.zelle--nur { cursor: default; }
+.malrahmen--linien .malraster__achsen { z-index: 1; }
+.linie { stroke: var(--navy); stroke-opacity: 0.6; stroke-width: 0.07; stroke-dasharray: 0.24 0.16; stroke-linecap: round; }
+.linie--gewaehlt { stroke: var(--achse-linie); stroke-opacity: 1; stroke-width: 0.12; stroke-dasharray: none; }
+.linie--falsch { stroke: var(--achse-linie); stroke-opacity: 1; stroke-width: 0.1; stroke-dasharray: 0.12 0.14; }
+/* Griff am Ende jeder Linie: echter Knopf, mindestens 48 px */
+.linien-griff {
+  position: absolute; z-index: 2;
+  left: calc(var(--rand) + var(--x) * (100% - 2 * var(--rand)));
+  top: calc(var(--rand) + var(--y) * (100% - 2 * var(--rand)));
+  width: max(48px, calc(0.62 * (100% - 2 * var(--rand)) / var(--spalten, 8))); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  padding: 0; border-radius: 50%; border: 3px dashed var(--navy);
+  background: var(--weiss); color: var(--weiss); cursor: pointer;
+  box-shadow: 0 6px 14px -6px rgba(3, 20, 35, 0.6);
+}
+.linien-griff svg { width: 70%; height: 70%; display: block; margin: auto; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.linien-griff .griff-haken, .linien-griff .griff-kreuz { display: none; }
+.linien-griff[aria-pressed="true"] { background: var(--achse-linie); border-style: solid; border-color: var(--weiss); }
+.linien-griff[aria-pressed="true"] .griff-haken { display: inline; }
+.linien-griff.linien-griff--falsch { background: var(--weiss); border: 3px solid var(--achse-linie); color: var(--achse-linie); }
+.linien-griff--falsch .griff-haken { display: none !important; }
+.linien-griff--falsch .griff-kreuz { display: inline; }
+.linien-griff:focus-visible { outline: 3px solid var(--navy); outline-offset: 3px; box-shadow: 0 0 0 9px var(--weiss) !important; }
+
+/* ---------- Rechtstexte (Impressum, Datenschutz) ---------- */
+.rechtstext { gap: calc(18 * var(--s)); }
+.rechtstext h2 { font-size: max(20px, calc(34 * var(--s))); margin-top: .4em; }
+.rechtstext a { color: var(--weiss); }
+.rechts-kasten { background: rgba(255, 255, 255, 0.12); border: 1px solid var(--glas-kante); border-radius: calc(28 * var(--s)); padding: .8em 1.1em; }
+.kurz-kinder { background: var(--koralle-hell); color: var(--navy); border-radius: calc(36 * var(--s)); padding: 1em 1.2em; display: flex; flex-direction: column; gap: .6em; }
+.kurz-kinder h2 { margin-top: 0; }
+.liste { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: .4em; }
+
+/* ---------- Meldungen ---------- */
+.meldung-bereich { display: flex; justify-content: center; padding: 0 16px; }
+.meldung { width: var(--fenster-breite); background: var(--koralle-hell); color: var(--navy); border: 2px solid var(--glas-kante); border-radius: calc(28 * var(--s)); padding: .6em 1em; font-weight: 700; margin-bottom: 12px; }
+.meldung:empty { display: none; }
+.vorschau-hinweis { background: var(--koralle); color: var(--navy); text-align: center; font-weight: 700; padding: 6px 16px; }
+
+/* ---------- Dialog ---------- */
+dialog {
+  max-width: min(620px, calc(100vw - 32px));
+  color: var(--weiss);
+  border-radius: calc(48 * var(--s)); border: 2px solid var(--glas-kante);
+  background: linear-gradient(180deg, var(--dialog-oben), var(--dialog-unten));
+  box-shadow: inset 0 2px 0 var(--glas-glanz), 0 26px 50px -10px var(--glas-schatten);
+  padding: max(24px, calc(48 * var(--s))) max(20px, calc(56 * var(--s)));
+}
+dialog::backdrop { background: rgba(5, 25, 42, 0.6); }
+dialog h2 { font-family: var(--serif); font-weight: 500; font-size: var(--h2); margin-bottom: 12px; }
+dialog p + p { margin-top: 10px; }
+dialog .knopfreihe { margin-top: var(--abstand); }
+
+/* ---------- Fuß ---------- */
+.fuss { display: flex; justify-content: center; gap: 12px; padding: 8px 16px calc(16px + env(safe-area-inset-bottom, 0px)); font-size: var(--klein); }
+.fuss a {
+  display: inline-flex; align-items: center; min-height: 48px; padding: 0 14px; border-radius: 999px;
+  color: var(--weiss); background: var(--glas-text-oben);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .licht { animation: none; opacity: .8; }
+  .blasen { display: none; }
+  .knopf, a.station { transition: none; }
+  .knopf:active, a.station:active { transform: none; }
+  a.station:hover { transform: none; }
+}
+
+/* Querformat: Stationen ohne Scrollen sichtbar (Lernlagune: Querformat-ohne-Scrollen) */
+@media (orientation: landscape) and (min-width: 820px) {
+  .stella { width: calc(118 * var(--s)); min-width: 84px; }
+  .seite { padding-top: calc(36 * var(--s) + env(safe-area-inset-top, 0px)); gap: calc(36 * var(--s)); }
+  .kopf { gap: calc(8 * var(--s)); }
+  .station { padding-top: calc(32 * var(--s)); padding-bottom: calc(28 * var(--s)); gap: calc(10 * var(--s)); }
+  .station__bild { max-width: calc(150 * var(--s)); min-width: 104px; }
+  .stella { width: calc(100 * var(--s)); min-width: 76px; }
+}
+
+/* ---------- Spiegeln: Faltschnitt ---------- */
+.falz { stroke: var(--navy); stroke-width: 0.1; stroke-dasharray: 0.3 0.16; stroke-linecap: round; }
+.zelle--papier { background-color: var(--papier); }
+.zelle--weg { background-color: transparent; border-color: rgba(11, 49, 85, 0.08); }
+.falt-papier { fill: var(--papier); stroke: var(--navy); stroke-width: 0.06; }
+.falt-gitter line { stroke: rgba(11, 49, 85, 0.22); stroke-width: 0.04; }
+.falt-stueck { stroke: var(--navy); stroke-width: 0.05; }
+.vorlage { background: var(--platte); border-radius: max(14px, calc(22 * var(--s))); padding: 8px 10px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--navy); }
+.vorlage__titel { font-size: var(--klein); font-weight: 700; text-align: center; }
+.vorlage svg { height: max(130px, calc(210 * var(--s))); width: auto; max-width: 100%; }
+.antworten { display: flex; gap: max(10px, calc(16 * var(--s))); justify-content: center; flex-basis: 100%; }
+@media (orientation: landscape) and (min-width: 820px) { .antworten { flex-direction: column; align-items: center; } }
+.antwort {
+  position: relative; width: max(96px, calc(170 * var(--s))); aspect-ratio: 1; padding: 8px;
+  border: 3px solid transparent; border-radius: max(16px, calc(26 * var(--s)));
+  background: var(--platte); cursor: pointer; box-shadow: 0 8px 18px -8px rgba(3, 20, 35, 0.55);
+}
+.antwort svg { width: 100%; height: 100%; display: block; }
+.antwort[aria-checked="true"] { border-color: var(--koralle); box-shadow: 0 0 0 4px var(--weiss), 0 8px 18px -8px rgba(3, 20, 35, 0.55); }
+.antwort:focus-visible { outline: 3px solid var(--navy); outline-offset: 4px; }
+.antwort--falsch .antwort__kreuz {
+  position: absolute; inset: 22%;
+  background: linear-gradient(45deg, transparent 44%, var(--achse-linie) 44% 56%, transparent 56%), linear-gradient(-45deg, transparent 44%, var(--achse-linie) 44% 56%, transparent 56%);
+}
+.antwort--falsch[aria-checked="true"] { border-color: var(--achse-linie); }
+
+/* ---------- Spiegeln: Auswahl ---------- */
+/* Etappe 6b: flach (ohne Karte), damit die Bilder nicht wie Knöpfe aussehen. Nur „Runde starten“ ist ein Knopf. */
+.runde-inhalt { font-size: var(--klein); margin-bottom: -6px; }
+.beispiel-kachel { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--weiss); font-size: var(--klein); }
+.beispiel-kachel svg { width: 100%; height: max(64px, calc(118 * var(--s))); }
+.bildchen-grund { fill: var(--kaestchen); }
+.runde-knopf { align-self: center; display: inline-flex; flex-direction: column; align-items: center; gap: 2px; min-height: 56px; }
+.runde-knopf__zahl { font-size: var(--klein); font-weight: 400; }
+
+/* ---------- Bandornamente ---------- */
+/* Langer Streifen: breiter als die quadratischen Raster, damit die Kästchen groß bleiben */
+.malrahmen--band { width: min(100% - 2 * var(--rand), 1000px); }
+@media (orientation: landscape) and (min-width: 820px) {
+  .malrahmen--band { width: min(100% - 2 * var(--rand), 1300px); }
+}
+.zelle--gesperrt { background-color: var(--gesperrt); cursor: default; }
+.band-grenze { stroke: var(--navy); stroke-width: 0.1; stroke-linecap: round; }
+.baustein { fill: none; stroke: var(--koralle); stroke-width: 0.12; stroke-linejoin: round; }
+.baustein--leer { stroke: var(--navy); stroke-opacity: 0.55; stroke-width: 0.08; stroke-dasharray: 0.22 0.14; }
+/* Erfinde eigenes: die neue Kopie gleitet vom Baustein aus an ihren Platz (nur Transformation und Deckkraft) */
+.kopie--neu { animation: kopie-da 420ms var(--ease) both; }
+@keyframes kopie-da { from { transform: translateX(-4px); opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .kopie--neu { animation: none; } }
+
+/* Bandornamente: Auswahl */
+.beispiel-liste--1 { grid-template-columns: minmax(0, 1fr); }
+.beispiel-liste--2 { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.bildchen-vorlage { fill: var(--gesperrt); }
+
+/* ---------- Sammelbuch ---------- */
+.sammelbuch-knopf { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; }
+.mini-reihe { display: flex; gap: 4px; }
+.mini-stempel { width: 10px; height: 10px; border-radius: 50%; border: 1.5px dashed currentColor; opacity: .7; }
+.mini-stempel--da { background: var(--koralle); border: 1.5px solid currentColor; opacity: 1; }
+.buch { display: flex; flex-direction: column; gap: max(14px, calc(24 * var(--s))); }
+.buch h2 { font-family: var(--serif); font-weight: 500; font-size: var(--h2); }
+.buch-station { background: var(--platte); color: var(--navy); border-radius: max(18px, calc(32 * var(--s))); padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.buch-station__kopf { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.buch-station__kopf h3 { font-family: var(--serif); font-weight: 500; font-size: max(20px, calc(32 * var(--s))); }
+.buch-station__bild { width: max(56px, calc(80 * var(--s))); flex: none; }
+.buch-station__bild svg { width: 100%; height: auto; display: block; }
+.buch-station__stand { font-size: var(--klein); }
+.buch-station__los { margin-left: auto; }
+.stempel-reihe { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stempel { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.stempel__bild { width: max(56px, calc(84 * var(--s))); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; }
+.stempel--da .stempel__bild { background: var(--koralle-hell); box-shadow: inset 0 0 0 3px var(--koralle); }
+.stempel--da .stempel__bild img { width: 70%; height: auto; }
+.stempel--offen .stempel__bild { border: 3px dashed rgba(11, 49, 85, 0.45); }
+.stempel__stufe { font-weight: 700; }
+.stempel__text { font-size: var(--klein); }
+.stempel--offen .stempel__text { color: var(--text-leise); }
+.kann-liste { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: .5em; }
+.neu-anfangen { width: var(--fenster-breite); max-width: 100%; margin-top: max(24px, calc(48 * var(--s))); padding-top: 16px; border-top: 1px solid var(--glas-kante); display: flex; flex-direction: column; align-items: flex-start; gap: 8px; color: var(--weiss); font-size: var(--klein); }
+.neu-anfangen h2 { font-size: var(--text); font-weight: 700; }
+
+/* ---------- Erwachsenenbereich (Startseite) ---------- */
+.erwachsene-bereich { width: var(--fenster-breite); max-width: 100%; margin: max(24px, calc(48 * var(--s))) auto 16px; display: flex; flex-direction: column; gap: 12px; padding: 0 16px; box-sizing: border-box; }
+.erwachsene { background: var(--glas-text-oben); border: 2px solid var(--glas-kante); border-radius: max(22px, calc(40 * var(--s))); color: var(--weiss); }
+.erwachsene summary { cursor: pointer; list-style: none; min-height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; }
+.erwachsene summary::-webkit-details-marker { display: none; }
+.erwachsene summary::after { content: ""; flex: none; width: 22px; height: 22px; background: linear-gradient(currentColor, currentColor) center / 20px 3px no-repeat, linear-gradient(currentColor, currentColor) center / 3px 20px no-repeat; }
+.erwachsene[open] summary::after { background: linear-gradient(currentColor, currentColor) center / 20px 3px no-repeat; }
+.erwachsene summary h2 { font-family: var(--serif); font-weight: 500; font-size: max(20px, calc(32 * var(--s))); }
+.erwachsene__inhalt { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 18px; font-size: var(--klein); }
+.erw-abschnitt { display: flex; flex-direction: column; gap: 8px; }
+.erw-abschnitt h3 { font-size: var(--text); font-weight: 700; }
+.erw-abschnitt a, .rechts-kasten a { color: var(--weiss); display: inline-flex; align-items: center; min-height: 48px; }
+.erw-tabelle { border-collapse: collapse; width: 100%; }
+.erw-tabelle th, .erw-tabelle td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--glas-kante); }
+.erw-tabelle thead th { font-weight: 700; color: var(--koralle-hell); }
+@media (max-width: 640px) {
+  .erw-tabelle thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .erw-tabelle tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--glas-kante); }
+  .erw-tabelle th, .erw-tabelle td { display: block; border: 0; padding: 2px 0; }
+  .erw-tabelle td::before { content: attr(data-kopf) ": "; font-weight: 700; }
+}
+
+/* Urkunde im Sammelbuch */
+.knopfreihe--links { justify-content: flex-start; }
+.urkunde-status:empty { display: none; }
+.urkunde-noch { font-weight: 700; }
+
+/* ---------- Etappe 6b: Werkzeugleiste springt nicht ---------- */
+/* Der Hilfe-Knopf (Spiegel bzw. Baustein) erscheint erst nach dem ersten „Fertig?“. Sein Platz ist von Anfang an
+   reserviert (unsichtbar, nicht bedienbar), damit die anderen Knöpfe nicht verrutschen. */
+.werkzeug--spiegel[hidden] { display: flex !important; visibility: hidden; }
+
+/* ---------- Etappe 6b: Faltschnitt wählen – Antworten groß, Papier kleiner ---------- */
+.spiegel-buehne--waehlen .malrahmen { width: min(100% - 2 * var(--rand), calc(44svh), 560px); }
+.spiegel-buehne--waehlen .antwort { width: max(110px, calc(220 * var(--s))); }
+@media (orientation: landscape) and (min-width: 820px) {
+  .spiegel-buehne--waehlen { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+  .spiegel-buehne--waehlen .malrahmen { width: min(100% - 2 * var(--rand), calc(100svh - 330px), 600px); }
+  .spiegel-buehne--waehlen .werkzeuge { width: auto; flex-direction: row; flex-wrap: wrap; justify-content: center; align-content: start; }
+  .spiegel-buehne--waehlen .antworten { flex-direction: row; flex-basis: 100%; }
+  .spiegel-buehne--waehlen .antwort { width: min(30%, calc((100svh - 330px) / 2.2), 200px); }
+}
+
+/* ---------- Etappe 6b: Rückmeldung als Sprechblase von Stella unter der Fläche ---------- */
+/* Deckend hell mit Navy-Text (Kontrast unabhängig vom Grundbild), Lesetext-Größe, nah an der Aufgabe.
+   Leer bleibt der Platz frei (unsichtbar), damit nichts springt. */
+.rueckmeldung {
+  grid-area: rueck; justify-self: stretch; align-self: start;
+  display: flex; align-items: center; gap: 12px;
+  min-height: 56px; padding: 6px 18px 6px 8px;
+  background: var(--koralle-hell); color: var(--navy);
+  border-radius: max(18px, calc(28 * var(--s)));
+  box-shadow: 0 8px 18px -10px rgba(3, 20, 35, 0.55);
+  font-size: var(--text); line-height: 1.3; font-weight: 700;
+}
+.rueckmeldung img { width: max(40px, calc(52 * var(--s))); height: auto; flex: none; }
+.rueckmeldung:has(#hinweis:empty) { visibility: hidden; }
+.geschafft .rueckmeldung { visibility: hidden; }
+.spiegel-buehne .rueckmeldung { justify-self: center; width: var(--rahmen-b, 100%); max-width: 100%; box-sizing: border-box; }
+
+/* Rundenstand als sechs kleine Kreise neben der Marke (Form statt Zahl) */
+.runden-punkte { display: inline-flex; gap: 6px; vertical-align: middle; margin-right: 8px; }
+.runden-punkte span { width: max(14px, calc(20 * var(--s))); height: max(14px, calc(20 * var(--s))); border-radius: 50%; border: 2px solid var(--weiss); box-sizing: border-box; }
+.runden-punkte .da { background: var(--koralle); border-color: var(--koralle); }
+.runden-punkte .jetzt { border-color: var(--koralle); box-shadow: inset 0 0 0 3px var(--weiss); }
+
+/* Etappe 6c: Beschriftungen der Werkzeuge in einer Zeile (z. B. „rechts drehen“), Knöpfe gleich hoch */
+.werkzeug span { white-space: nowrap; }

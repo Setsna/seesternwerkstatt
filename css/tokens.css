@@ -1,0 +1,84 @@
+/* Seesternwerkstatt: alle Farben, Schriften, Größen und Abstände an einer Stelle.
+   Look nach Lernlagune/DESIGN.md: Navy im Licht, Weiß im Glas, helles Liquid Glass, Libre Caslon + Andika.
+   Eigener Akzent: Korallenorange (nur Stella, Stempel, Hauptknopf; immer mit Navy-Text).
+   Alle Größen sind Entwurfspixel mal --s. Entwurfsfläche: iPad hochkant, 1088 px breit.
+   Feste Untergrenzen nur für Tippflächen (48 px) und Text (17 px). */
+:root {
+  --breite: 100vw;
+  --s: calc(min(var(--breite), 1088px) / 1088);
+
+  /* Farben (Lernlagune) */
+  --tiefe: #0e2f45;
+  --navy: #0b3155;
+  --navy-weich: #133c5a;
+  --welle: #2d6f98;
+  --weiss: #ffffff;
+  --glas-kante: rgba(255, 255, 255, 0.5);
+  --glas-glanz: rgba(255, 255, 255, 0.62);
+  --glas-schatten: rgba(3, 20, 35, 0.38);
+  /* Glas, auf dem weißer Text steht: dunkel genug für 4.5:1 auch über hellem Licht */
+  --glas-text-oben: rgba(10, 52, 84, 0.72);
+  --glas-text-unten: rgba(10, 52, 84, 0.82);
+  --nebel: rgba(10, 52, 84, 0.7);
+  --hof: rgba(228, 243, 245, 0.88);
+  --hof-rand: rgba(228, 243, 245, 0.5);
+  --grund-ersatz: linear-gradient(180deg, #e6f2ef 0%, #a9d4e1 30%, #3f86a8 62%, #12425f 100%);
+  --dialog-oben: #164a6e;
+  --dialog-unten: #0e3554;
+
+  /* Eigener Akzent */
+  --koralle: #ff8a5c;          /* Hauptknopf, Stella, Stempel – nur mit Navy-Text (Kontrast 5.7:1, gemessen) */
+  --koralle-hell: #ffe3d6;
+  --hinweis-hell: #ffd2bd;     /* Hinweistext auf dunklem Glas */
+
+  /* Formfarben für Code-Grafiken (Tangram-Teile, Figuren). Unterscheidung zusätzlich über Muster.
+     Endgültige Prüfung auf Farbschwäche in Etappe 2. */
+  --form-1: #f4b942;   /* Sonnengelb */
+  --form-2: #4fb3bf;   /* Lagunentürkis */
+  --form-3: #b294dc;   /* Lavendel (Etappe 6b: vorher Koralle, die ist dem Akzent vorbehalten) */
+  --form-4: #8fc66b;   /* Seegras */
+  --form-5: #7b8fe0;   /* Muschelblau */
+  --form-6: #e889b4;   /* Anemone */
+  --form-7: #f2e2c4;   /* Sand */
+  /* Flächen, auf denen gearbeitet wird (Etappe 6b: vorher als feste Werte in sw.css) */
+  --platte: rgba(240, 249, 251, 0.95);      /* helle, fast deckende Platte (Spielfläche, Kacheln, Sammelbuch) */
+  --kaestchen: #f7fcfd;                     /* leeres Kästchen im Malraster */
+  --gesperrt: #e3ecf0;                      /* gesperrtes Kästchen (Vorlage beim Bandornament) */
+  --papier: var(--form-7);                  /* gefaltetes Papier beim Faltschnitt */
+  --text-leise: #46606c;                    /* leiser Text auf heller Platte (Kontrast 6:1) */
+  --form-rand: #0b3155;
+  --raster: rgba(11, 49, 85, 0.18);
+  --achse: #0b3155;
+  --achse-linie: #c43d12;            /* Spiegelachse im Malraster, wie die rote Linie im Heft */
+  --umriss: rgba(11, 49, 85, 0.2);   /* Fläche der Tangram-Figur auf der hellen Spielfläche */
+
+  /* Schriften */
+  --serif: 'Libre Caslon Text', Georgia, 'Times New Roman', serif;   /* nur Namen und Titel */
+  --sans: 'Andika', 'Trebuchet MS', system-ui, sans-serif;           /* alles, was Kinder lesen */
+
+  --text: max(17px, calc(27 * var(--s)));
+  --klein: max(17px, calc(22 * var(--s)));
+  --h1: calc(84 * var(--s));
+  --h2: max(22px, calc(42 * var(--s)));
+  --wortmarke: max(20px, calc(31 * var(--s)));
+
+  /* Maße */
+  --ziel: max(48px, calc(72 * var(--s)));        /* alles, was man antippt */
+  --ziel-gross: max(56px, calc(84 * var(--s)));  /* Hauptknöpfe */
+  --abstand: calc(24 * var(--s));
+  --abstand-gross: calc(48 * var(--s));
+  --ecke: calc(64 * var(--s));
+  --fenster-breite: min(100% - 32px, calc(900 * var(--s)));
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: dark;
+}
+
+/* iPad quer, Laptop, Tafel: Maßstab an Höhe und Breite ausrichten (Lernlagune) */
+@media (orientation: landscape) and (min-width: 820px) {
+  :root { --s: min(calc(100svh / 1010), calc(var(--breite) / 1360)); }
+}
+/* Handy hochkant */
+@media (max-width: 640px) and (orientation: portrait) {
+  :root { --s: calc(var(--breite) / 600); }
+}

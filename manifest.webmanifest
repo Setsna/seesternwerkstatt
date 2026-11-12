@@ -1,0 +1,16 @@
+{
+  "name": "Seesternwerkstatt",
+  "short_name": "Seestern",
+  "description": "Spiegeln, Legen, Muster: Geometrie für Klasse 3. Ohne Anmeldung, alles bleibt auf dem Gerät.",
+  "lang": "de",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0e2f45",
+  "theme_color": "#0e2f45",
+  "icons": [
+    { "src": "bilder/app-192.png?b=1", "sizes": "192x192", "type": "image/png" },
+    { "src": "bilder/app-512.png?b=1", "sizes": "512x512", "type": "image/png" },
+    { "src": "bilder/app-512-maskable.png?b=1", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0e2f45">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
+  <title>Sammelbuch – Seesternwerkstatt</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Seesternwerkstatt">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="preload" href="schriften/libre-caslon-text.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="schriften/andika-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="bilder/stella-64.png?b=1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="bilder/app-180.png?b=1">
+  <link rel="stylesheet" href="schriften/schriften.css?v=40">
+  <link rel="stylesheet" href="css/tokens.css?v=40">
+  <link rel="stylesheet" href="css/sw.css?v=40">
+</head>
+<body>
+  <div class="grund" aria-hidden="true"></div>
+  <div class="licht" aria-hidden="true"></div>
+  <div id="vorschau-hinweis" class="vorschau-hinweis" hidden></div>
+  <div class="meldung-bereich"><p id="meldung" class="meldung" role="status"></p></div>
+  <main id="app" class="seite" tabindex="-1">
+    <noscript><p>Diese Lernseite braucht JavaScript. Bitte schalte es im Browser ein.</p></noscript>
+  </main>
+  <dialog id="loeschen-dialog" aria-labelledby="loeschen-titel">
+    <h2 id="loeschen-titel">Wirklich alles löschen?</h2>
+    <p>Dann sind dein Name, alle Stempel und alles, was du geschafft hast, weg. Das kann man nicht rückgängig machen.</p>
+    <p class="knopfreihe">
+      <button type="button" class="knopf haupt" data-aktion="behalten">Nein, behalten</button>
+      <button type="button" class="knopf leise-knopf" data-aktion="loeschen">Ja, alles löschen</button>
+    </p>
+  </dialog>
+  <footer class="fuss"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></footer>
+  <script src="js/config.js?v=40"></script>
+  <script src="js/speicher.js?v=40"></script>
+  <script src="js/geometrie.js?v=40"></script>
+  <script src="js/motive.js?v=40"></script>
+  <script src="js/urkunde.js?v=40"></script>
+  <script src="js/sammelbuch.js?v=40"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0e2f45">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
+  <title>Bandornamente – Seesternwerkstatt</title>
+  <link rel="icon" href="bilder/stella-64.png?b=1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="bilder/app-180.png?b=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Seesternwerkstatt">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="schriften/schriften.css?v=40">
+  <link rel="stylesheet" href="css/tokens.css?v=40">
+  <link rel="stylesheet" href="css/sw.css?v=40">
+</head>
+<body class="aufgabe">
+  <div class="grund" aria-hidden="true"></div>
+  <main class="aufgabe-seite">
+    <header class="aufgabe-kopf">
+      <a class="knopf leise-knopf knopf--klein" id="zurueck-link" href="index.html">← Start</a>
+      <h1>Bandornamente</h1>
+      <p class="aufgabe-auftrag" id="auftrag">Setze das Bandornament fort.</p>
+    </header>
+    <!-- Auswahl: erscheint ohne Stufe in der Adresse (js/band-auswahl.js) -->
+    <div class="tangram-auswahl" id="auswahl" hidden></div>
+
+    <div class="spiegel-buehne" id="buehne">
+      <div class="malrahmen" id="malrahmen">
+        <!-- Kästchen sind echte Knöpfe (Tastatur: Pfeile, Leertaste). Die Grenze der Vorlage liegt als Zeichnung darüber. -->
+        <div class="malraster" id="malraster" role="grid" aria-label="Kästchenraster" aria-describedby="mal-hilfe"></div>
+        <svg class="malraster__achsen" id="achsen" aria-hidden="true" focusable="false"></svg>
+      </div>
+      <!-- Rückmeldung von Stella direkt unter der Fläche (Etappe 6b) -->
+      <div class="rueckmeldung" id="rueckmeldung"><img src="bilder/stella-64.png?b=1" alt="" width="64" height="64"><p id="hinweis"></p></div>
+      <div class="werkzeuge" role="toolbar" aria-label="Werkzeuge">
+        <div class="farbwahl" id="farbwahl" role="radiogroup" aria-label="Farbe"></div>
+        <button type="button" class="werkzeug werkzeug--leise" data-aktion="zurueck" aria-label="Rückgängig">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>rückgängig</span>
+        </button>
+        <button type="button" class="werkzeug werkzeug--spiegel" data-aktion="spiegel" aria-pressed="false" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="6" width="8" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="6" width="8" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2.5 2"/></svg>
+          <span>Baustein</span>
+        </button>
+        <button type="button" class="werkzeug werkzeug--fertig" data-aktion="verschieben" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Verschieben</span>
+        </button>
+        <button type="button" class="werkzeug werkzeug--leise" data-aktion="neu" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Neu</span>
+        </button>
+        <button type="button" class="werkzeug werkzeug--fertig" data-aktion="fertig">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5 10 17 19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Fertig?</span>
+        </button>
+      </div>
+      <div class="erfolg erfolg--spiegel" id="erfolg" hidden>
+        <picture><source srcset="bilder/stella.webp?b=1" type="image/webp"><img src="bilder/stella.png?b=1" alt="" width="640" height="640"></picture>
+        <p class="erfolg__gross">Richtig fortgesetzt!</p>
+        <p class="erfolg__stempel" id="erfolg-stempel" hidden></p>
+        <div class="erfolg__knoepfe">
+          <a class="knopf haupt knopf--klein" id="weiter" href="band.html">Nächste Aufgabe</a>
+          <a class="knopf leise-knopf knopf--klein" id="zur-auswahl" href="band.html" hidden>Zur Auswahl</a>
+        </div>
+      </div>
+    </div>
+    <p class="nurvorlesen" id="mal-hilfe"></p>
+  </main>
+  <div id="live" class="nurvorlesen" aria-live="polite" aria-atomic="true"></div>
+  <footer class="fuss"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></footer>
+  <script src="js/config.js?v=40"></script>
+  <script src="js/speicher.js?v=40"></script>
+  <script src="js/geometrie.js?v=40"></script>
+  <script src="js/motive.js?v=40"></script>
+  <script src="js/spiegeln-raster.js?v=40"></script>
+  <script src="js/spiegeln-aufgaben.js?v=40"></script>
+  <script src="js/band-aufgaben.js?v=40"></script>
+  <script src="js/spiegeln-malen.js?v=40"></script>
+  <script src="js/band-auswahl.js?v=40"></script>
+  <script src="js/band.js?v=40"></script>
+</body>
+</html>
