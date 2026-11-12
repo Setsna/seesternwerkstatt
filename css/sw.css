@@ -682,3 +682,25 @@ dialog .knopfreihe { margin-top: var(--abstand); }
 
 /* Etappe 6c: Beschriftungen der Werkzeuge in einer Zeile (z. B. „rechts drehen“), Knöpfe gleich hoch */
 .werkzeug span { white-space: nowrap; }
+
+/* ---------- Kinder-Rückmeldung 12.11.2026: quer Raster und Werkzeuge als Gruppe in der Mitte ---------- */
+/* Vorher lag die Werkzeugspalte (und damit die Erfolgskarte) am rechten Bildschirmrand, weit weg vom Raster.
+   Jetzt ist die Rasterspalte nur so breit wie das Raster, beide stehen zusammen mittig.
+   Die Rastergröße rechnet mit der Bühnenbreite (cqw) statt mit der Spalte, sonst hinge sie im Kreis.
+   Ohne Containerabfragen (Safari vor 16) bleibt das alte Layout. Faltschnitt-Wählen und langer Band-Streifen
+   haben eigene Spalten und bleiben, wie sie sind. */
+@supports (width: 1cqw) {
+  @media (orientation: landscape) and (min-width: 820px) {
+    .spiegel-buehne:not(.spiegel-buehne--waehlen):not(.spiegel-buehne--band) {
+      --werkzeug-spalte: max(150px, calc(200 * var(--s)));
+      --gruppe-abstand: max(28px, calc(48 * var(--s)));
+      width: 100%; container-type: inline-size;
+      grid-template-columns: auto var(--werkzeug-spalte);
+      justify-content: center; column-gap: var(--gruppe-abstand);
+    }
+    .spiegel-buehne:not(.spiegel-buehne--waehlen):not(.spiegel-buehne--band) .malrahmen {
+      width: min(100cqw - var(--werkzeug-spalte) - var(--gruppe-abstand) - 2 * var(--rand),
+                 calc((100svh - 330px) * var(--spalten, 8) / var(--zeilen, 8)), 760px);
+    }
+  }
+}

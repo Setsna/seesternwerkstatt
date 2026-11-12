@@ -76,7 +76,7 @@
   if (q.has('eigenes')) {
     const BREIT = 4, b = BA.B, h = BA.H, MAX = Math.ceil((b - BREIT) / BREIT);
     let kopien = 0, api = null;
-    rahmen.classList.add('malrahmen--band');
+    rahmen.classList.add('malrahmen--band'); document.getElementById('buehne').classList.add('spiegel-buehne--band');
     kopf('Erfinde eigenes', 'Male einen Baustein und verschiebe ihn.');
     function kopienZeichnen(neu = false) {
       svg.querySelectorAll('.kopien').forEach(n => n.remove());
@@ -148,7 +148,7 @@
   let kb, kh;
   if (parkett) ({ px: kb, py: kh } = BA.perioden(aufg.vorgabe, aufg.vorlageB, aufg.vorlageH));
   else { kb = BA.periode(aufg.vorgabe, aufg.vorlage, aufg.h); kh = aufg.h; }
-  if (!parkett) rahmen.classList.add('malrahmen--band');
+  if (!parkett) { rahmen.classList.add('malrahmen--band'); document.getElementById('buehne').classList.add('spiegel-buehne--band'); }
   kopf(marke, parkett ? 'Setze das Parkettmuster nach rechts und nach unten fort.' : 'Setze das Bandornament bis zum Ende fort.', probe ? null : rundenPunkte(nr, PRO_RUNDE));
 
   /* Hilfe „Baustein“: Rahmen um jeden Baustein */
