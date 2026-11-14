@@ -113,8 +113,11 @@
      Welche Teilung gilt, entscheidet groesse() (bei fast quadratischer Fläche die, in die die Figur größer passt). */
   let teilung = 'quer';
   function zonen() {
+    /* Sehr breite Fläche: Figur und Ablage nicht über die ganze Breite ziehen, sondern als Gruppe in die Mitte,
+       sonst stehen Figur und Erfolgskarte weit auseinander (PC-Fenster 3:1, 14.11.2026). */
+    const w = Math.min(bw, bh * (E.querMax || Infinity)), x0 = (bw - w) / 2;
     return teilung === 'quer'
-      ? { ziel: { x: 0, y: 0, w: bw * 0.58, h: bh }, ablage: { x: bw * 0.58, y: 0, w: bw * 0.42, h: bh }, spalten: 2, zeilen: 4 }
+      ? { ziel: { x: x0, y: 0, w: w * 0.58, h: bh }, ablage: { x: x0 + w * 0.58, y: 0, w: w * 0.42, h: bh }, spalten: 2, zeilen: 4 }
       : { ziel: { x: 0, y: 0, w: bw, h: bh * 0.55 }, ablage: { x: 0, y: bh * 0.55, w: bw, h: bh * 0.45 }, spalten: 4, zeilen: 2 };
   }
   function versatzNeu() {
@@ -155,6 +158,10 @@
     /* für die Erfolgskarte: quer = rechts in der Ablage, unten = in der Ablage unter der Figur (iPad hoch),
        hoch = unter der Fläche (nur sehr schmale Flächen wie am Handy) */
     rahmen.dataset.lage = spiel.dataset.lage = teilung === 'quer' ? 'quer' : v > 0.8 ? 'unten' : 'hoch';
+    /* Erfolgskarte (quer): Mitte und Breite der Ablage in Prozent der Fläche */
+    const ab = zonen().ablage;
+    rahmen.style.setProperty('--ablage-mitte', ((ab.x + ab.w / 2) / bw * 100).toFixed(2) + '%');
+    rahmen.style.setProperty('--ablage-breite', (ab.w / bw * 100).toFixed(2) + '%');
     const neu = versatzNeu(), dx = neu.x - versatz.x, dy = neu.y - versatz.y;
     versatz = neu;
     if (figurKnoten) figurKnoten.style.transform = `translate(${versatz.x}px, ${versatz.y}px)`;

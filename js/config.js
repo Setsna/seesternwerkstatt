@@ -69,6 +69,7 @@ SW.config = {
     kurzeSeiteMin: 6.5,       /* … und mindestens (kleiner = Figur und Teile größer) */
     figurRand: 0.6,           /* Platz rund um die Figur in ihrer Zone (Einheiten) */
     ablagePlatz: 1.9,         /* jeder Platz in der Ablage mindestens so groß (Einheiten) */
+    querMax: 1.8,             /* sehr breite Fläche (PC, Beamer): Figur und Ablage nutzen höchstens Höhe × querMax, mittig */
     einrasten: 0.4,           /* so nah muss ein Teil an seinem Platz liegen, damit es einrastet */
     einrastenTastatur: 0.2,   /* mit Pfeiltasten (Schritt 0,25): kleiner, damit man von einem Platz wieder wegkommt */
     fast: 0.7,                /* so nah gilt als „fast“: Stella sagt, ob schieben, drehen oder wenden fehlt */

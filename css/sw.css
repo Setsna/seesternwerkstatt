@@ -244,7 +244,7 @@ body.aufgabe .grund::after { content: ""; position: absolute; inset: 0; backgrou
 }
 .erfolg p { margin: 0; }
 /* Spiegeln: Karte bleibt in der Spalte der Werkzeuge (quer schmal), Text bricht um */
-.spiegel-buehne .erfolg--spiegel { width: auto; max-width: 100%; box-sizing: border-box; }
+.spiegel-buehne .erfolg--spiegel { width: auto; max-width: 100%; box-sizing: border-box; hyphens: auto; -webkit-hyphens: auto; }
 @media (orientation: landscape) and (min-width: 820px) {
   .spiegel-buehne .erfolg--spiegel { padding-left: 14px; padding-right: 14px; }
   .spiegel-buehne .erfolg--spiegel .erfolg__gross { font-size: max(24px, calc(34 * var(--s))); }
@@ -255,8 +255,8 @@ body.aufgabe .grund::after { content: ""; position: absolute; inset: 0; backgrou
 .erfolg .knopf { margin-top: calc(8 * var(--s)); box-shadow: 0 8px 18px -8px rgba(3, 20, 35, 0.5); }
 /* Breite Fläche: Die Ablage sind die rechten 42 %. Karte mittig darin, nie breiter als die Ablage ohne Rand. */
 [data-lage="quer"] .erfolg {
-  left: 79%; top: 50%; --mitte: translate(-50%, -50%); transform: var(--mitte);
-  max-width: min(42% - 24px, 340px);
+  left: var(--ablage-mitte, 79%); top: 50%; --mitte: translate(-50%, -50%); transform: var(--mitte);
+  max-width: min(var(--ablage-breite, 42%) - 24px, 340px);
 }
 /* Fast quadratische Fläche mit Ablage unten (iPad hoch, Etappe 6c): Karte mittig in der Ablage unter der Figur */
 [data-lage="unten"] .erfolg {
@@ -390,7 +390,7 @@ body.aufgabe .grund::after { content: ""; position: absolute; inset: 0; backgrou
    die dann ausgeblendet sind. So verschiebt sich nichts und das Bild bleibt frei. */
 .spiegel-buehne { display: grid; gap: max(12px, calc(20 * var(--s))); grid-template-areas: "raster" "rueck" "werkzeuge"; justify-items: center; align-items: start; }
 @media (orientation: landscape) and (min-width: 820px) {
-  .spiegel-buehne { grid-template-areas: "raster werkzeuge" "rueck werkzeuge"; grid-template-columns: minmax(0, 1fr) max(150px, calc(200 * var(--s))); grid-template-rows: auto 1fr; }
+  .spiegel-buehne { grid-template-areas: "raster werkzeuge" "rueck werkzeuge"; grid-template-columns: minmax(0, 1fr) max(210px, calc(230 * var(--s))); grid-template-rows: auto 1fr; }
 }
 .spiegel-buehne .werkzeuge { grid-area: werkzeuge; }
 .spiegel-buehne .erfolg--spiegel { grid-area: werkzeuge; position: static; transform: none; animation: none; align-self: center; }
@@ -679,7 +679,7 @@ dialog .knopfreihe { margin-top: var(--abstand); }
 @supports (width: 1cqw) {
   @media (orientation: landscape) and (min-width: 820px) {
     .spiegel-buehne:not(.spiegel-buehne--waehlen):not(.spiegel-buehne--band) {
-      --werkzeug-spalte: max(150px, calc(200 * var(--s)));
+      --werkzeug-spalte: max(210px, calc(230 * var(--s)));
       --gruppe-abstand: max(28px, calc(48 * var(--s)));
       width: 100%; container-type: inline-size;
       grid-template-columns: auto var(--werkzeug-spalte);
