@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0e2f45">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://www.gstatic.com; font-src 'self'; connect-src 'self' https://*.googleapis.com; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
   <title>Seesternwerkstatt</title>
-  <meta name="description" content="Spiegeln, Legen, Muster: Geometrie für Klasse 3. Ohne Anmeldung, ohne Werbung. Alles bleibt auf dem Gerät.">
+  <meta name="description" content="Spiegeln, Legen, Muster: Geometrie für Klasse 3. Anmeldung mit dem Code vom Perlentaucher, ohne Werbung.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Seesternwerkstatt">
@@ -17,9 +17,9 @@
   <link rel="icon" href="bilder/stella-64.png?b=1">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="bilder/app-180.png?b=1">
-  <link rel="stylesheet" href="schriften/schriften.css?v=45">
-  <link rel="stylesheet" href="css/tokens.css?v=45">
-  <link rel="stylesheet" href="css/sw.css?v=45">
+  <link rel="stylesheet" href="schriften/schriften.css?v=46">
+  <link rel="stylesheet" href="css/tokens.css?v=46">
+  <link rel="stylesheet" href="css/sw.css?v=46">
 </head>
 <body>
   <!-- Wassergrund, Lichtschacht und Randblasen: nur Schmuck -->
@@ -34,12 +34,19 @@
   <!-- Für Eltern und Lehrkräfte: zwei Aufklapper unter jeder Ansicht (js/erwachsene.js) -->
   <div id="erwachsene" class="erwachsene-bereich"></div>
   <footer class="fuss"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></footer>
-  <script src="js/config.js?v=45"></script>
-  <script src="js/speicher.js?v=45"></script>
-  <script src="js/geometrie.js?v=45"></script>
-  <script src="js/motive.js?v=45"></script>
-  <script src="js/app.js?v=45"></script>
-  <script src="js/daten/erwachsene.js?v=45"></script>
-  <script src="js/erwachsene.js?v=45"></script>
+  <script src="js/config.js?v=46"></script>
+  <script src="js/konto-abgleich.js?v=46"></script>
+  <script src="js/konto-speicher.js?v=46"></script>
+  <script src="js/konto-cloud.js?v=46"></script>
+  <script src="js/speicher.js?v=46"></script>
+  <script src="js/geometrie.js?v=46"></script>
+  <script src="js/motive.js?v=46"></script>
+  <script src="js/app.js?v=46"></script>
+  <script src="js/daten/erwachsene.js?v=46"></script>
+  <script src="js/erwachsene.js?v=46"></script>
+  <!-- Gemeinsames Konto: Firebase vom Perlentaucher-Projekt, feste Version mit Prüfsumme. Steht hinter den eigenen Skripten. -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" integrity="sha384-ZaR6mWzmJtrRibZ1Vm7SoHFr8OXjyAuGAXalGDKqbxFT18oi/z+oZLIRFkpeNor1" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" integrity="sha384-I1LYojsZ5RM1cOda44Z2h42Qa6YfsQ1XkXxREnhp4ueYBR/4d1pG1K+NZM537Vsj" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" integrity="sha384-Ke0FJhH7LyRqDxZ0wt+/OXV38yfQVu7g9VPEEGjYmB4RVOY/ta04uecRhsMwT7V3" crossorigin="anonymous"></script>
 </body>
 </html>

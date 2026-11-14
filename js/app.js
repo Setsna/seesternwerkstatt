@@ -1,9 +1,9 @@
-/* Seesternwerkstatt: Ansichten und Bedienung der Startseite (Etappe 1).
-   Ansichten: Neu (Name, Klasse), Wer übt heute?, Start (Stationen).
+/* Seesternwerkstatt: Ansichten und Bedienung der Startseite.
+   Ansichten: Code-Eingabe (seit dem Konto-Umbau 14.11.2026, statt Name/Klasse und „Wer übt heute?“), Start.
    Aufbau nach dem Vorbild Zahlenschwarm, eigener Inhalt. */
 (() => {
   'use strict';
-  const C = SW.config, S = SW.speicher;
+  const C = SW.config, S = SW.speicher, cloud = S.cloud;
   const app = document.getElementById('app');
   const meldung = document.getElementById('meldung');
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -38,57 +38,68 @@
       </header>`;
   }
 
-  /* ---------- Neues Kind ---------- */
-  function ansichtNeu() {
-    const andere = S.kinder().length > 0;
+  /* ---------- Code-Eingabe (Konto-Umbau 14.11.2026) ---------- */
+  const MOMENT = 'Einen Moment …';
+  let ansicht = '';
+
+  /* Nach dem Anmelden: zurück zur Seite, die das Kind öffnen wollte (?zu=… von js/tuer.js), sonst Start */
+  const ZIEL = /^(tangram|spiegeln|band|sammelbuch)\.html(\?[A-Za-z0-9=&%._-]*)?$/;
+  function weiterNachAnmelden() {
+    const zu = new URLSearchParams(location.search).get('zu');
+    if (zu && ZIEL.test(zu)) { location.replace(zu); return true; }
+    return false;
+  }
+
+  /* Ergebnis von cloud.anmelden() oder start() anzeigen */
+  function nachAnmelden(r) {
+    if (!r.ok) {
+      if (ansicht === 'code' && app.querySelector('#code')) {
+        app.querySelector('#code-form button[type="submit"]').disabled = false;
+        app.querySelector('#code-hinweis').textContent = r.grund || '';
+        app.querySelector('#code').focus();
+      } else ansichtCode(r.grund);
+      return;
+    }
+    if (weiterNachAnmelden()) return;
+    ansichtStart();
+    if (r.gespeichert === false) melden(SPEICHER_FEHLT);
+  }
+
+  function ansichtCode(hinweis = '') {
     zeigen(`
-      ${kopf(andere ? 'Neues Kind' : 'Willkommen!', 'Ich bin Stella. Mit mir spiegelst du, legst Figuren und setzt Muster fort.')}
-      <section class="fenster mitte" aria-labelledby="h-neu">
-        <h2 id="h-neu">Wie heißt du?</h2>
-        <form id="neu-form" novalidate>
-          <label for="name">Dein Vorname</label>
-          <input type="text" id="name" name="name" autocomplete="off" autocapitalize="words" spellcheck="false" maxlength="${C.nameMaxLaenge}" aria-describedby="name-hinweis name-info">
-          <p id="name-hinweis" class="hinweis-feld" aria-live="polite"></p>
-          <fieldset class="klassenwahl">
-            <legend>In welche Klasse gehst du?</legend>
-            <div class="klassen-knoepfe">${C.klassen.map(n => `<label class="klasse-wahl"><input type="radio" name="klasse" value="${n}"><span>Klasse ${n}</span></label>`).join('')}</div>
-            <p id="klasse-hinweis" class="hinweis-feld" aria-live="polite"></p>
-          </fieldset>
-          <p class="knopfreihe">
-            <button type="submit" class="knopf haupt">Los geht's</button>
-            ${andere ? '<button type="button" class="knopf leise-knopf" data-aktion="wer">Zurück</button>' : ''}
-          </p>
+      ${kopf('Willkommen!', 'Ich bin Stella. Mit mir spiegelst du, legst Figuren und setzt Muster fort.')}
+      <section class="fenster mitte" aria-labelledby="h-code">
+        <h2 id="h-code">Wie lautet dein Code?</h2>
+        <form id="code-form" novalidate>
+          <label for="code">Dein Code</label>
+          <input type="text" id="code" name="code" class="code-feld" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="${C.codeLaenge + 4}" aria-describedby="code-hinweis code-info">
+          <p id="code-hinweis" class="hinweis-feld" aria-live="polite">${esc(hinweis || '')}</p>
+          <p class="knopfreihe"><button type="submit" class="knopf haupt">Weiter</button></p>
         </form>
-        <p id="name-info" class="leise">Dein Name bleibt nur auf diesem Gerät.</p>
-      </section>`, andere ? 'Neues Kind' : '');
-    app.querySelector('#neu-form').addEventListener('submit', e => {
+        <p id="code-info" class="leise">Dein Code hat ${C.codeLaenge} Zeichen: Buchstaben und Zahlen. Es ist derselbe Code wie beim Perlentaucher.</p>
+      </section>`, '');
+    ansicht = 'code';
+    app.querySelector('#code-form').addEventListener('submit', e => {
       e.preventDefault();
-      const feld = app.querySelector('#name');
-      const wahl = app.querySelector('input[name="klasse"]:checked');
-      const r = S.anlegen(feld.value, wahl ? wahl.value : null);
-      app.querySelector('#name-hinweis').textContent = '';
-      app.querySelector('#klasse-hinweis').textContent = '';
-      if (!r.kind) {
-        if (r.feld === 'klasse') { app.querySelector('#klasse-hinweis').textContent = r.grund; app.querySelector('input[name="klasse"]').focus(); }
-        else if (r.feld === 'name') { app.querySelector('#name-hinweis').textContent = r.grund; feld.focus(); }
-        else melden(r.grund);
-        return;
-      }
-      if (!r.ok) melden(SPEICHER_FEHLT);
-      ansichtStart();
+      const knopf = e.target.querySelector('button[type="submit"]');
+      if (knopf.disabled) return;
+      knopf.disabled = true;
+      app.querySelector('#code-hinweis').textContent = MOMENT;
+      cloud.anmelden(app.querySelector('#code').value).then(nachAnmelden, () => nachAnmelden({ ok: false, grund: cloud.TEXT.sonst }));
     });
   }
 
-  /* ---------- Wer übt heute? ---------- */
-  function ansichtWer() {
-    const liste = S.kinder().map(k => `<li><button type="button" class="knopf" data-aktion="waehlen" data-id="${esc(k.id)}">${esc(k.name)}</button></li>`).join('');
-    zeigen(`
-      ${kopf('Wer übt heute?', 'Tippe auf deinen Namen.')}
-      <section class="fenster mitte" aria-label="Namen">
-        <ul class="kinder-liste">${liste}</ul>
-        <p class="knopfreihe"><button type="button" class="knopf leise-knopf" data-aktion="neu">Ich bin neu hier</button></p>
-      </section>`, 'Wer übt heute?');
+  /* Zeile auf der Startseite, wenn der Stand gerade nicht in der Datenbank ankommt */
+  function netzText() {
+    const z = cloud.zustand().art;
+    if (z === 'lokal') return 'Gerade ohne Internet. Dein Stand bleibt auf diesem Gerät und wird später abgeglichen.';
+    if (z === 'fehler') return 'Dein Stand konnte gerade nicht im Internet gespeichert werden. Er bleibt auf diesem Gerät. Bitte sag deiner Lehrkraft Bescheid.';
+    return '';
   }
+  cloud.beiZustand(() => {
+    const p = app.querySelector('#netz-zeile');
+    if (p) { p.textContent = netzText(); p.hidden = !p.textContent; }
+  });
 
   /* ---------- Start ---------- */
   function stationKarte(st) {
@@ -119,36 +130,41 @@
 
   function ansichtStart() {
     const k = S.aktiv();
-    const mehrere = S.kinder().length > 1;
     zeigen(`
       ${kopf(`Hallo, ${esc(k.name)}!`, 'Wähle eine Station.')}
       ${S.istVorschau ? `<p class="einleitung hof">Vorschau: ${Object.keys(k.stempel).length} Stempel.</p>` : ''}
+      <p class="einleitung hof netz-zeile" id="netz-zeile" role="status"${netzText() ? '' : ' hidden'}>${esc(netzText())}</p>
       <section class="stationen-block" aria-labelledby="h-stationen">
         <h2 id="h-stationen" class="nurvorlesen">Stationen</h2>
         <ul class="stationen">${C.stationen.map(stationKarte).join('')}</ul>
       </section>
       ${sammelbuchKnopf(k)}
       ${S.istVorschau ? '' : `<p class="knopfreihe">
-        ${mehrere ? '<button type="button" class="knopf leise-knopf knopf--klein" data-aktion="wer">Kind wechseln</button>' : ''}
-        <button type="button" class="knopf leise-knopf knopf--klein" data-aktion="neu">Neues Kind anlegen</button>
+        <button type="button" class="knopf leise-knopf knopf--klein" data-aktion="abmelden">Abmelden</button>
       </p>`}`, `Hallo, ${k.name}`);
+    ansicht = 'start';
   }
 
   /* ---------- Ablauf ---------- */
   function anzeigen() {
-    if (S.ladeFehler) melden('Dein gespeicherter Stand konnte nicht gelesen werden. Damit nichts verloren geht, speichert die Seite gerade nichts. Bitte sag deiner Lehrkraft Bescheid.');
+    if (S.ladeFehler) melden(cloud.TEXT.unlesbar);
     if (S.aktiv()) ansichtStart();
-    else if (S.kinder().length) ansichtWer();
-    else ansichtNeu();
+    else ansichtCode();
   }
 
   app.addEventListener('click', e => {
     const b = e.target.closest('[data-aktion]');
     if (!b || b.disabled) return;
-    const a = b.dataset.aktion;
-    if (a === 'waehlen') { S.waehlen(b.dataset.id); ansichtStart(); }
-    else if (a === 'wer') { S.abmelden(); S.kinder().length ? ansichtWer() : ansichtNeu(); }
-    else if (a === 'neu') { S.abmelden(); ansichtNeu(); }
+    if (b.dataset.aktion === 'abmelden') {
+      b.disabled = true;
+      cloud.abmelden().then(() => { melden(''); ansichtCode(); }, () => { ansichtCode(); });
+    }
+  });
+
+  /* Die Lehrkraft hat den Stand zurückgesetzt: Das Gerät hat seinen Stand verworfen (js/konto-cloud.js). */
+  cloud.beiNeustart(() => {
+    if (ansicht === 'start') ansichtStart();
+    melden('Deine Lehrkraft hat die Seesternwerkstatt neu gestartet. Du fängst von vorn an.');
   });
 
   if (S.istVorschau) {
@@ -156,7 +172,42 @@
     h.hidden = false;
     h.textContent = 'Vorschau: Hier wird nichts gespeichert.';
   }
-  anzeigen();
 
-  SW.app = { anzeigen, melden };
+  /* Was das Gerät schon weiß, steht sofort da. Die Antwort aus dem Netz kommt nach. */
+  const darfWechseln = () => ['code', 'start'].includes(ansicht);
+  function starten() {
+    if (S.istVorschau) { ansichtStart(); return; }
+    const LA = window.LagunenKonto.adresse;
+    const qr = LA.code(), spur = LA.spur();
+    LA.saeubern();
+    if (qr) {
+      /* Ein gescannter Code hat Vorrang vor dem Kind, das in diesem Tab noch angemeldet ist. */
+      if (S.aktiv() && S.code() !== qr) S.S.abmelden();
+      if (S.aktiv()) ansichtStart(); else ansichtCode(MOMENT);
+      cloud.anmelden(qr).then(r => { if (darfWechseln()) { if (!r.ok) ansichtCode(r.grund); else nachAnmelden(r); } }, () => {});
+      return;
+    }
+    /* Kommt das Kind von einer Station (?zu=…) und kennt der Tab es schon: gleich zurück */
+    if (S.aktiv() && weiterNachAnmelden()) return;
+    if (S.aktiv()) ansichtStart(); else ansichtCode(MOMENT);
+    if (S.ladeFehler) melden(cloud.TEXT.unlesbar);
+    const gemerkt = S.code();
+    cloud.start().then(r => {
+      if (r.ok) { if (darfWechseln()) nachAnmelden(r); return null; }
+      if (ansicht === 'code' && app.querySelector('#code-hinweis').textContent === MOMENT) {
+        app.querySelector('#code-hinweis').textContent = spur ? 'Der Code wurde nicht ganz gelesen. Tippe ihn bitte ein.' : (r.grund || '');
+      }
+      if (r.grund) return r;
+      /* Firebase kennt niemanden, der Tab aber schon: mit dem gemerkten Code anmelden */
+      return gemerkt && S.code() === gemerkt && cloud.aktiv() ? cloud.anmelden(gemerkt) : null;
+    }).then(r => {
+      if (!r) return;
+      if (r.ok) { if (ansicht === 'start') ansichtStart(); return; }
+      /* Die Lehrkraft hat den Code gesperrt: nicht auf dem Gerät weiterarbeiten lassen */
+      if (r.grund === cloud.TEXT.gesperrt && S.aktiv()) { S.S.abmelden(); if (darfWechseln()) ansichtCode(r.grund); }
+    }, () => {});
+  }
+  starten();
+
+  SW.app = { anzeigen, melden, cloud };
 })();

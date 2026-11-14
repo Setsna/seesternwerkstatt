@@ -1,7 +1,7 @@
 {
   "name": "Seesternwerkstatt",
   "short_name": "Seestern",
-  "description": "Spiegeln, Legen, Muster: Geometrie für Klasse 3. Ohne Anmeldung, alles bleibt auf dem Gerät.",
+  "description": "Spiegeln, Legen, Muster: Geometrie für Klasse 3. Anmeldung mit dem Code vom Perlentaucher.",
   "lang": "de",
   "start_url": "./index.html",
   "scope": "./",

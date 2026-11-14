@@ -1,5 +1,5 @@
 /* Seesternwerkstatt: Texte für Eltern und Lehrkräfte (zwei Aufklapper am Ende der Startseite).
-   Quelle: Ausgaben/Erwachsenenbereich Entwurf.md (von Ingo geprüft am 12.11.2026). Ansprache: Sie.
+   Quelle: Ausgaben/Erwachsenenbereich Entwurf.md (von Ingo geprüft am 12.11.2026), Konto-Umbau 14.11.2026 (Daten, Ablauf, Tafel, Lehreransicht). Ansprache: Sie.
    Daten, kein Code: Absätze sind Texte, Listen sind Arrays [fett, Rest], Tabellen [Kopf, Zeilen]. */
 SW.erwachsene = [
   {
@@ -38,7 +38,10 @@ SW.erwachsene = [
       },
       {
         titel: 'Daten',
-        absaetze: ['Alles bleibt auf diesem Gerät im Browser: der Vorname, die Klasse, der Stand und die Stempel. Es gibt kein Konto, keine Anmeldung, keine Werbung und keine Verbindung zu anderen Anbietern.'],
+        absaetze: [
+          'Die Kinder melden sich mit ihrem Zugangscode an. Es ist derselbe wie beim Perlentaucher. Gespeichert werden unter diesem Code die gelegten Tangram-Figuren, die geschafften Runden und die Stempel. So ist der Stand auf jedem Gerät da, in der Schule und zu Hause. Der Stand liegt zusätzlich im Browser des Geräts, damit auch ohne Internet gearbeitet werden kann. Andere Kinder sehen ihn nicht, eine Auswertung für die Lehrkraft gibt es nicht. Löschen lassen können Sie den Stand über die Lehrkraft.',
+          'Der Code gehört Ihrem Kind. Wer ihn kennt, kann sich damit anmelden. Auf einem fremden Gerät am Ende bitte auf „Abmelden“ tippen.'
+        ],
         link: ['Mehr dazu auf der Seite Datenschutz', 'datenschutz.html']
       }
     ]
@@ -50,13 +53,13 @@ SW.erwachsene = [
       {
         titel: 'Im Unterricht',
         liste: [
-          ['Ablauf:', 'Jedes Kind wählt auf seinem Gerät seinen Namen und eine Station. Beim Spiegeln und bei den Bandornamenten besteht eine Runde aus sechs Aufgaben, beim Tangram legt das Kind einzelne Figuren. Ein Stempel kommt nach der ersten geschafften Runde einer Stufe bzw. nach allen drei Figuren einer Stufe.'],
+          ['Ablauf:', 'Jedes Kind meldet sich mit seinem Code an (derselbe wie beim Perlentaucher, auch über den Aufkleber) und wählt eine Station. Beim Spiegeln und bei den Bandornamenten besteht eine Runde aus sechs Aufgaben, beim Tangram legt das Kind einzelne Figuren. Ein Stempel kommt nach der ersten geschafften Runde einer Stufe bzw. nach allen drei Figuren einer Stufe.'],
           ['Zeitbedarf:', 'etwa 10 bis 15 Minuten je Runde (geschätzt, noch nicht mit einer Klasse erprobt).'],
           ['Differenzierung:', 'drei Stufen je Station. Schnelle Kinder finden in „knifflig“ schräge Achsen, das Achsenkreuz und Parkettmuster. Langsamere Kinder bekommen Hilfen, ohne dass die Lösung gezeigt wird.'],
-          ['Tafel und Beamer:', 'Jede Station lässt sich vorne vormachen. Ist kein Name gewählt, wird dabei nichts gespeichert.'],
+          ['Tafel und Beamer:', 'Jede Station lässt sich vorne vormachen. Dafür braucht es eine Anmeldung, am besten mit einem eigenen Code für die Lehrkraft, damit kein Kinderstand verändert wird.'],
           ['Am Tisch:', 'Zu jeder Station gibt es Ideen ohne Bildschirm. Gebraucht werden vor allem Papier, Stift und Schere, für einzelne Ideen ein kleiner Spiegel, Farbe oder Perlen.'],
           ['Alles ausgedacht:', 'Figuren, Aufgaben, Texte und Bilder sind für diese Seite neu entstanden. Aus Lehrwerken oder anderen Angeboten wurde nichts übernommen.'],
-          ['Keine Lehreransicht:', 'Die Ergebnisse bleiben beim Kind. Den Stand sehen Sie im Sammelbuch des Kindes auf seinem Gerät.']
+          ['Keine Lehreransicht:', 'Die Ergebnisse bleiben beim Kind. Den Stand sehen Sie im Sammelbuch des Kindes. Sicherung, Auskunft, Zurücksetzen und Löschen laufen über den Lehrerbereich des Perlentauchers.']
         ]
       },
       {

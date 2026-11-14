@@ -4,8 +4,9 @@
 
 Teil der Lernlagune („Wohin tauchst du heute?“), aber ein eigenständiges Projekt mit eigenem Maskottchen (Seestern Stella).
 
-- Kein Konto, keine Anmeldung, keine Werbung, keine fremden Dienste.
-- Alles bleibt im Browser (`localStorage`), je Kind ein Eintrag. Kein Sichern als Datei (Entscheidung Ingo, 11.11.2026: Kinder können keine Dateien speichern und laden).
+- **Anmeldung mit dem Zugangscode des Perlentauchers** (seit 14.11.2026, gemeinsames Konto im Firebase-Projekt des Perlentauchers). Ohne freigeschalteten Code zeigt keine der fünf Seiten Aufgaben (Tür in `js/tuer.js`). Ehrlich: Das ist eine Tür, kein Tresor, Repo und Quelltext sind öffentlich. Geschützt ist der Stand der Kinder, über die Regeln der Datenbank.
+- Stand je Kind in `sw_stand/<code>` (Figuren, Runden, Stempel, Zeitpunkte; kein Name, keine Klasse), zusätzlich im Browser (`localStorage`, je Code ein Eintrag), damit es auch ohne Internet weitergeht. Kein Sichern als Datei.
+- Einziger fremder Dienst: Google Firebase (Skripte von `www.gstatic.com` mit Prüfsumme). Keine Werbung, keine Analyse.
 - Reines HTML, CSS und JavaScript ohne Framework und ohne Build-Schritt.
 
 ## Stand
@@ -21,22 +22,26 @@ Hosting: GitHub Pages aus `main` von `Setsna/seesternwerkstatt`, live unter http
 ## Ordner
 
 ```
-index.html            Startseite (Willkommen, Wer übt heute?, Stationen)
+index.html            Startseite (Code-Eingabe, Stationen, Abmelden); ?zu=<seite> führt nach dem Anmelden dorthin
 tangram.html          Station Tangram: ohne Angabe die Auswahl, mit ?figur=…&stufe=… das Spiel
 spiegeln.html         Station Spiegeln: ohne Angabe die Auswahl, ?stufe=… eine Runde (6 Aufgaben),
                       ?art=…&stufe=…&saat=N eine einzelne Aufgabe zum Ausprobieren
 band.html             Station Bandornamente: ohne Angabe die Auswahl, ?stufe=… eine Runde (6 Aufgaben),
                       ?probe=1&stufe=…&saat=N eine einzelne Aufgabe, ?eigenes=1 Erfinde eigenes
-sammelbuch.html       Mein Sammelbuch: Stempel aller Stationen, „Das kann ich schon“, Urkunde, Alles löschen / Neu anfangen
+sammelbuch.html       Mein Sammelbuch: Stempel aller Stationen, „Das kann ich schon“, Urkunde
 impressum.html
 datenschutz.html
 css/tokens.css        alle Farben, Schriften, Größen (Maßstab --s wie in der Lernlagune)
 css/sw.css            Layout
 js/config.js          alle Einstellungen, Liste der Stationen
-js/speicher.js        Speicher im Browser, ?vorschau=N
+js/speicher.js        Stand der Seesternwerkstatt (Felder, Zusammenführen, Zurücksetzen), ?vorschau=N nur auf localhost
+js/konto-abgleich.js  aus dem Baukasten Lernlagune-Konto: Bausteine zum Zusammenführen
+js/konto-speicher.js  aus dem Baukasten: Stand im Browser je Code
+js/konto-cloud.js     aus dem Baukasten: Anmeldung mit dem Code, Abgleich mit Firebase (auf localhost nie echtes Firebase)
+js/tuer.js            Tür vor Tangram, Spiegeln, Band, Sammelbuch: ohne Anmeldung zur Startseite, lädt erst dann die Skripte der Station
 js/geometrie.js       Spiegeln, Drehen, Verschieben, Deckungsgleichheit, Rasterfelder
 js/motive.js          Code-Grafiken der Stationskarten
-js/sammelbuch.js      Sammelbuch und Löschen-Dialog (Sätze „Das kann ich schon“ in js/config.js unter koennen)
+js/sammelbuch.js      Sammelbuch (Sätze „Das kann ich schon“ in js/config.js unter koennen)
 js/urkunde.js         Urkunde als PDF ohne Bibliothek (Canvas → JPEG → PDF), im Sammelbuch
 js/app.js             Ansichten der Startseite
 js/erwachsene.js      Erwachsenenbereich: zwei Aufklapper „Für Eltern“, „Für Lehrkräfte“ unter jeder Startansicht
@@ -63,7 +68,7 @@ schriften/            Andika, Libre Caslon Text (SIL OFL 1.1, Lizenztexte danebe
 bilder/               Bilder aus Canva (eigene Versionsnummer bildStand in config.js)
 ```
 
-Tests und Werkzeuge liegen bewusst **außerhalb** dieses Repositorys im Projektordner unter `tools/` (Geometrie-, Speicher-, Tangram-, Spiegeln-, Bandornament-Test, Rauchtest, Vorschau der Tangram-Figuren, der erzeugten Spiegeln-Aufgaben und der Urkunde, lokaler Server). Sie werden nicht veröffentlicht.
+Tests und Werkzeuge liegen bewusst **außerhalb** dieses Repositorys im Projektordner unter `tools/` (Geometrie-, Speicher-, Cloud-, Tangram-, Spiegeln-, Bandornament-Test, Rauchtest, Vorschau mit Anmeldung gegen eine Firebase-Attrappe, Vorschau der Tangram-Figuren, der erzeugten Spiegeln-Aufgaben und der Urkunde, lokaler Server). Sie werden nicht veröffentlicht.
 
 ## Neue Station hinzufügen
 
@@ -73,7 +78,7 @@ Tests und Werkzeuge liegen bewusst **außerhalb** dieses Repositorys im Projekto
 
 ## Veröffentlichen
 
-1. Lokal prüfen: `tools/server.ps1` starten, `http://localhost:8151/tools/rauchtest.html`, `geometrie-test.html`, `speicher-test.html`, `tangram-test.html`, `spiegeln-test.html` und `band-test.html` müssen OK zeigen. Dazu `py tools/pruefen.py` (Verweise, CSP, noindex, ?v=N, Lizenzen, .gitignore, JS-Syntax): erwartet „ALLES OK“.
+1. Lokal prüfen: `tools/server.ps1` starten, `http://localhost:8151/tools/rauchtest.html`, `geometrie-test.html`, `speicher-test.html`, `cloud-test.html`, `tangram-test.html`, `spiegeln-test.html` und `band-test.html` müssen OK zeigen. Dazu `py tools/pruefen.py` (Verweise, CSP, noindex, ?v=N, Lizenzen, .gitignore, JS-Syntax): erwartet „ALLES OK“.
 2. Bei jeder Änderung an js oder css die Zahl `?v=N` in **allen** HTML-Dateien um eins hochzählen.
 3. `git status` prüfen: nur Dateien, die ins Netz sollen (siehe `.gitignore`, sperrt alles außer der fertigen Seite).
 4. Commit und Push nach `main`, danach die Seite live ansehen (HTTP 200, richtige `?v=N`).

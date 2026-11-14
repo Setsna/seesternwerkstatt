@@ -13,16 +13,31 @@ SW.config = {
   name: 'Seesternwerkstatt',
   unterzeile: 'Spiegeln, Legen, Muster',
 
-  /* Speicher im Browser. Ändert sich der Aufbau der Daten, schema hochzählen
-     und in js/speicher.js eine Umwandlung vom alten Stand ergänzen. */
+  /* Speicher im Browser (seit dem Konto-Umbau 14.11.2026, js/konto-speicher.js):
+     localStorage seesternwerkstatt-v2.<code> und …<code>.abgleich, sessionStorage seesternwerkstatt-v2-wer.
+     Der alte Stand seesternwerkstatt-v1 (nur Tests) wird nicht übernommen und nicht gelöscht. */
   speicher: {
-    schluessel: 'seesternwerkstatt',        /* localStorage: seesternwerkstatt-v<schema> */
-    schema: 1,
-    werSchluessel: 'seesternwerkstatt-wer'  /* sessionStorage: welches Kind in diesem Tab übt */
+    schluessel: 'seesternwerkstatt',
+    schema: 2
   },
   nameMaxLaenge: 20,
-  klassen: [3, 4],
-  klasseStandard: 3,
+  codeLaenge: 8,
+
+  /* Gemeinsames Konto: dasselbe Firebase-Projekt und dieselben Codes wie der Perlentaucher.
+     Diese Angaben sind öffentlich (stehen in jeder Firebase-Webseite), geschützt wird über die Regeln. */
+  firebase: {
+    apiKey: 'AIzaSyBX3MUJq69uFyejbEiJimGeAtHMER3OCdE',
+    authDomain: 'lernplattform-44aa1.firebaseapp.com',
+    projectId: 'lernplattform-44aa1',
+    storageBucket: 'lernplattform-44aa1.firebasestorage.app',
+    messagingSenderId: '213839225177',
+    appId: '1:213839225177:web:4cf676269e50c708466c48'
+  },
+  cloud: {
+    kinder: 'kinder',        /* kinder/<code>: Vorname, von der Lehrkraft angelegt (nur lesen) */
+    stand: 'sw_stand',       /* sw_stand/<code>: der Stand dieses Kindes in der Seesternwerkstatt */
+    schreibPauseMs: 2500     /* so lange nach der letzten Änderung warten, dann gebündelt schreiben */
+  },
 
   /* Versionsnummer der Bilder, getrennt von ?v=N für js und css. */
   bildStand: 1,

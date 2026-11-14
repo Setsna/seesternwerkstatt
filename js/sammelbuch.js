@@ -3,13 +3,11 @@
    - Kleiner Stand je Station, ohne Vergleich und ohne Punkte.
    - Das kann ich schon: ein Satz je verdientem Stempel (SW.config.koennen).
    - Meine Urkunde (Etappe 5c): sobald jede Station mindestens einen Stempel hat, als PDF (js/urkunde.js).
-   - Ganz unten: „Alles löschen / Neu anfangen“ mit Dialog. Löscht nur das gewählte Kind.
-     In der Vorschau (?vorschau=N) ist Löschen abgeschaltet. */
+   - Kein Löschknopf mehr (Konto-Umbau 14.11.2026): Zurücksetzen macht die Lehrkraft im Perlentaucher. */
 (() => {
   'use strict';
   const C = SW.config, S = SW.speicher;
   const app = document.getElementById('app');
-  const dialog = document.getElementById('loeschen-dialog');
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const NAME = { leicht: 'Leicht', mittel: 'Mittel', knifflig: 'Knifflig' };
   const vorschau = S.istVorschau ? `?vorschau=${new URLSearchParams(location.search).get('vorschau')}` : '';
@@ -43,7 +41,7 @@
       return `<li class="stempel stempel--da">
           <span class="stempel__bild"><img src="bilder/stella-64.png?b=${C.bildStand}" alt="" width="64" height="64"></span>
           <span class="stempel__stufe">${NAME[stufe]}</span>
-          <span class="stempel__text">am ${datum(s.am)}</span>
+          <span class="stempel__text">am ${datum(s)}</span>
         </li>`;
     }
     return `<li class="stempel stempel--offen">
@@ -89,8 +87,8 @@
 
   function zeigen() {
     const k = S.aktiv();
-    if (!k) {
-      app.innerHTML = `${kopf('Mein Sammelbuch', 'Damit Stella dein Sammelbuch zeigen kann, wähle zuerst deinen Namen.')}
+    if (!k) {   /* kommt mit der Tür (js/tuer.js) eigentlich nicht vor */
+      app.innerHTML = `${kopf('Mein Sammelbuch', 'Melde dich zuerst auf der Startseite mit deinem Code an.')}
         <p class="knopfreihe"><a class="knopf haupt" href="index.html">Zur Startseite</a></p>`;
       document.title = `Sammelbuch – ${C.name}`;
       return;
@@ -111,19 +109,10 @@
         <h2 id="h-urkunde">Meine Urkunde</h2>
         ${urkundeBlock(k)}
       </section>
-      <p class="knopfreihe"><a class="knopf" href="index.html${vorschau}">← Zur Startseite</a></p>
-      <section class="neu-anfangen" aria-labelledby="h-neu">
-        <h2 id="h-neu">Neu anfangen</h2>
-        ${S.istVorschau
-          ? '<p>In der Vorschau kann man nichts löschen.</p>'
-          : `<p>Löscht deinen Namen, alle Stempel und alles, was du geschafft hast. Nur bei dir, nicht bei anderen Kindern.</p>
-             <button type="button" class="knopf leise-knopf knopf--klein" data-aktion="loeschen-fragen">Alles löschen / Neu anfangen</button>`}
-      </section>`;
+      <p class="knopfreihe"><a class="knopf" href="index.html${vorschau}">← Zur Startseite</a></p>`;
     document.title = `Sammelbuch von ${k.name} – ${C.name}`;
   }
 
-  /* ---------- Löschen mit Dialog ---------- */
-  let ausloeser = null;
   /* Urkunde machen und teilen */
   app.addEventListener('click', async e => {
     const b = e.target.closest('[data-aktion="urkunde-machen"], [data-aktion="urkunde-teilen"]');
@@ -141,27 +130,6 @@
     b.disabled = false;
     b.textContent = 'Urkunde neu machen';
   });
-
-  app.addEventListener('click', e => {
-    const b = e.target.closest('[data-aktion="loeschen-fragen"]');
-    if (!b) return;
-    ausloeser = b;
-    dialog.showModal();
-    dialog.querySelector('[data-aktion="behalten"]').focus();
-  });
-  dialog.addEventListener('click', e => {
-    const b = e.target.closest('[data-aktion]');
-    if (!b) return;
-    if (b.dataset.aktion === 'behalten') { dialog.close(); if (ausloeser) ausloeser.focus(); return; }
-    if (b.dataset.aktion === 'loeschen') {
-      const ok = S.aktivLoeschen();
-      dialog.close();
-      if (ok) location.href = 'index.html';
-      else document.getElementById('meldung').textContent = 'Das Löschen hat nicht geklappt. Bitte sag deiner Lehrkraft Bescheid.';
-    }
-  });
-  /* Fokus zurück auf den Knopf, auch nach Escape */
-  dialog.addEventListener('close', () => { if (ausloeser && document.contains(ausloeser)) ausloeser.focus(); });
 
   if (S.istVorschau) {
     const h = document.getElementById('vorschau-hinweis');

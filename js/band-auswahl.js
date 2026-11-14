@@ -56,9 +56,8 @@
       </section>`;
     };
 
-    const ohneKind = !kind && !(S && S.istVorschau);
     box.innerHTML = `
-      ${ohneKind ? '<p class="auswahl-hinweis">Du kannst hier üben. Damit Stella sich merkt, was du geschafft hast, wähle zuerst auf der <a href="index.html">Startseite</a> deinen Namen.</p>' : ''}
+  
       ${C.stufen.map(stufeHtml).join('')}
       <section class="stufe-block" aria-labelledby="h-eigenes">
         <div class="stufe-kopf"><h2 id="h-eigenes">Erfinde eigenes</h2><span class="stufe-stand">ohne Prüfen</span></div>

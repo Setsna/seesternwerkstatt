@@ -63,9 +63,8 @@
       </section>`;
     };
 
-    const ohneKind = !kind && !(S && S.istVorschau);
     box.innerHTML = `
-      ${ohneKind ? '<p class="auswahl-hinweis">Du kannst hier üben. Damit Stella sich merkt, was du geschafft hast, wähle zuerst auf der <a href="index.html">Startseite</a> deinen Namen.</p>' : ''}
+  
       ${C.stufen.map(stufeHtml).join('')}
       <details class="am-tisch">
         <summary><h2>Am Tisch</h2></summary>

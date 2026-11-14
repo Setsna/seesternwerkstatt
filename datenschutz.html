@@ -14,9 +14,9 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Seesternwerkstatt">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="stylesheet" href="schriften/schriften.css?v=45">
-  <link rel="stylesheet" href="css/tokens.css?v=45">
-  <link rel="stylesheet" href="css/sw.css?v=45">
+  <link rel="stylesheet" href="schriften/schriften.css?v=46">
+  <link rel="stylesheet" href="css/tokens.css?v=46">
+  <link rel="stylesheet" href="css/sw.css?v=46">
 </head>
 <body>
   <div class="grund" aria-hidden="true"></div>
@@ -25,54 +25,100 @@
     <header class="kopf">
       <a class="wortmarke" href="index.html">Seesternwerkstatt<svg class="welle" viewBox="0 0 62 12" aria-hidden="true" focusable="false"><path d="M2 4c5-3 9-3 14 0s9 3 14 0 9-3 14 0 9 3 14 0M2 9c5-3 9-3 14 0s9 3 14 0 9-3 14 0 9 3 14 0" fill="none" stroke="#2d6f98" stroke-width="1.6" stroke-linecap="round"/></svg></a>
       <h1 class="frage">Datenschutz</h1>
-      <p class="einleitung hof">Stand: 12. November 2026</p>
+      <p class="einleitung hof">Stand: 14. November 2026</p>
     </header>
 
     <section class="fenster rechtstext" aria-label="Datenschutzerklärung">
       <div class="kurz-kinder">
         <h2>Kurz erklärt, auch für Kinder</h2>
-        <p>Die Seite merkt sich deinen Vornamen, deine Klasse und was du schon geschafft hast. So kannst du später weitermachen.</p>
-        <p>Das alles bleibt auf diesem Gerät. Nichts davon geht ins Internet. Deine Lehrkraft und andere Kinder können es von ihren Geräten aus nicht sehen.</p>
-        <p>Übt noch jemand an diesem Gerät im selben Browser, sieht er deinen Namen in der Liste. Wenn er ihn antippt, sieht er auch deinen Stand.</p>
-        <p>In deinem Sammelbuch kannst du ganz unten alles löschen und neu anfangen. Dann ist dein Stand weg, auch für dich.</p>
+        <p>Du meldest dich mit deinem Code an. Es ist derselbe Code wie beim Perlentaucher.</p>
+        <p>Die Seite merkt sich, welche Tangram-Figuren du gelegt hast, wie viele Runden du beim Spiegeln und bei den Bandornamenten geschafft hast und welche Stempel du hast.</p>
+        <p>Das alles wird im Internet gespeichert, unter deinem Code. So kannst du auf jedem Gerät dort weitermachen, wo du aufgehört hast.</p>
+        <p>Andere Kinder können deinen Stand nicht sehen. Es gibt keine Werbung und keine Rangliste.</p>
+        <p>Behalte deinen Code für dich. Wer ihn kennt, kann sich als du anmelden.</p>
         <p>Deine Urkunde macht das Gerät selbst. Sie geht nur weg, wenn du sie selbst teilst.</p>
+        <p>Wenn du möchtest, dass alles gelöscht wird, sag es deiner Lehrkraft.</p>
       </div>
 
       <h2>1. Verantwortlicher</h2>
-      <p>Verantwortlich für diese Seite im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:</p>
+      <p>Verantwortlich für die Datenverarbeitung auf dieser Seite im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:</p>
       <div class="rechts-kasten">
         <p><b>Ingo H.</b><br>Lehrkraft<br>E-Mail: <a href="mailto:setsna@gmail.com">setsna@gmail.com</a></p>
       </div>
+      <p>Die Seesternwerkstatt ist ein Unterrichtsangebot für eine einzelne Klasse. Sie wurde privat entwickelt und wird privat betrieben.</p>
 
-      <h2>2. Was auf dem Gerät gespeichert wird</h2>
-      <p>Die Seite legt im lokalen Speicher des Browsers (localStorage) für jedes Kind einen Eintrag an. Er enthält:</p>
+      <h2>2. Welche Daten verarbeitet werden</h2>
+      <h3>Das gemeinsame Konto</h3>
+      <p>Die Seesternwerkstatt nutzt dasselbe Konto wie die Lernplattform Perlentaucher. Dazu gehören:</p>
       <ul class="liste">
-        <li>den Vornamen oder Spitznamen, den das Kind selbst eingibt</li>
-        <li>die Klasse (3 oder 4), die das Kind beim Anlegen wählt</li>
-        <li>den Stand je Station, zum Beispiel welche Figuren und Aufgaben schon gelöst sind</li>
-        <li>Stempel für geschaffte Stufen, jeweils mit Datum</li>
-        <li>den Zeitpunkt, an dem das Kind angelegt wurde</li>
+        <li>der Vorname</li>
+        <li>ein achtstelliger Zugangscode, der die Anmeldung ersetzt</li>
+        <li>der Zeitpunkt, an dem die Lehrkraft den Zugang freigeschaltet hat</li>
       </ul>
-      <p>Welches Kind gerade übt, steht bis zum Schließen des Browser-Tabs im Sitzungsspeicher (sessionStorage).</p>
-      <p>Diese Daten werden weder an den Verantwortlichen noch an Dritte übertragen. Es gibt kein Konto, keine Anmeldung und keine Datenbank. Der Verantwortliche hat keinen Zugriff auf die Daten. Es werden keine Cookies gesetzt.</p>
-      <p>Die Speicherung ist unbedingt erforderlich, damit der ausdrücklich gewünschte Dienst funktioniert, nämlich das Weiterarbeiten am eigenen Stand (§ 25 Abs. 2 Nr. 2 TDDDG). Die Seite bittet den Browser außerdem, die Daten nicht von selbst zu löschen (Storage API, „persist“). Ob er das tut, entscheidet der Browser.</p>
-      <p><b>Mehrere Kinder an einem Gerät:</b> Die Namen sind nicht durch ein Passwort geschützt. Wer dasselbe Gerät im selben Browser benutzt, sieht die Namen und kann nach dem Antippen den Stand dieses Kindes sehen.</p>
+      <p>Die Seesternwerkstatt liest daraus nur den Vornamen, um das Kind zu begrüßen und auf die Urkunde zu schreiben. Sie ändert an diesem Konto nichts. Es werden keine Nachnamen, Geburtsdaten, Anschriften, Telefonnummern oder E-Mail-Adressen der Kinder erhoben. Für die Anmeldung legt die Seite im Hintergrund ein Konto an, dessen Kennung nur aus dem Zugangscode besteht.</p>
 
-      <p><b>Urkunde:</b> Im Sammelbuch kann das Kind eine Urkunde als PDF erstellen (Vorname, Datum, verdiente Stempel, „Das kann ich schon“). Sie entsteht vollständig im Browser auf dem Gerät und wird nirgends gespeichert oder übertragen. Nur wenn das Kind selbst „Teilen“ antippt, öffnet sich das Teilen-Menü des Geräts (zum Beispiel AirDrop oder Mail). Wohin die Datei dann geht, entscheidet die Person am Gerät. Die Urkunde ist ein Ausdruck und keine Sicherung: Sie lässt sich nicht wieder in die Seite laden.</p>
+      <h3>Der Stand in der Seesternwerkstatt</h3>
+      <p>Unter dem Zugangscode speichert die Seesternwerkstatt:</p>
+      <ul class="liste">
+        <li>welche Tangram-Figuren in welcher Stufe gelegt wurden, jeweils mit Zeitpunkt</li>
+        <li>wie viele Runden beim Spiegeln und bei den Bandornamenten je Stufe geschafft wurden, und eine Kennung der zuletzt geschafften Runde (damit dieselbe Runde nicht doppelt zählt)</li>
+        <li>Stempel für geschaffte Stufen, jeweils mit Datum</li>
+        <li>den Zeitpunkt, an dem der Stand angelegt wurde, und den Zeitpunkt der letzten Änderung</li>
+      </ul>
+      <p>Der Vorname steht nicht im Stand. Freie Texte kann ein Kind in der Seesternwerkstatt nirgends eingeben.</p>
+      <p><b>Urkunde:</b> Im Sammelbuch kann das Kind eine Urkunde als PDF erstellen (Vorname, Datum, verdiente Stempel, „Das kann ich schon“). Sie entsteht vollständig im Browser auf dem Gerät und wird weder in der Datenbank noch sonst irgendwo gespeichert. Nur wenn das Kind selbst „Teilen“ antippt, öffnet sich das Teilen-Menü des Geräts (zum Beispiel AirDrop oder Mail). Wohin die Datei dann geht, entscheidet die Person am Gerät.</p>
 
-      <h2>3. Daten beim Aufruf der Seite</h2>
-      <p>Die Seite wird über GitHub Pages bereitgestellt (GitHub Inc., USA). Wie bei jeder Webseite verarbeitet der Anbieter dabei Verbindungsdaten, auch die IP-Adresse. Der Verantwortliche wertet diese Daten nicht aus. Eine Übermittlung in die USA ist nicht auszuschließen. Sie stützt sich auf den Angemessenheitsbeschluss der Europäischen Kommission zum EU-US Data Privacy Framework beziehungsweise auf Standardvertragsklauseln. Rechtsgrundlage ist das berechtigte Interesse an einer sicheren Bereitstellung des Lernangebots (Art. 6 Abs. 1 lit. f DSGVO).</p>
-      <p>Andere Dienste sind nicht eingebunden. Schriften und Bilder liegen auf derselben Adresse wie die Seite. Es gibt keine Analysewerkzeuge, keine Werbung und keine Inhalte anderer Anbieter. Die Seite enthält keine KI. Die Tipps von Stella sind vorbereitete Texte.</p>
+      <h3>Technisch notwendige Daten</h3>
+      <p>Beim Aufruf der Seite verarbeiten die eingesetzten Anbieter, wie bei jeder Webseite, Verbindungsdaten einschließlich der IP-Adresse. Der Verantwortliche wertet diese Daten nicht aus. Es sind keine Zugriffsstatistik und keine Analysewerkzeuge eingebunden.</p>
 
-      <h2>4. Speicherdauer und Löschen</h2>
-      <p>Die Daten bleiben im Browser, bis sie gelöscht werden. Eine Sicherungskopie gibt es nicht: Werden die Browserdaten gelöscht, ist auch der Stand weg. Alle Daten der Seite lassen sich in den Einstellungen des Browsers löschen (Websitedaten).</p>
-      <p>Jedes Kind kann außerdem im eigenen Sammelbuch ganz unten mit „Alles löschen / Neu anfangen“ seinen eigenen Eintrag löschen (Name, Klasse, Stand und Stempel). Die Einträge anderer Kinder im selben Browser bleiben dabei erhalten. Vor dem Löschen fragt die Seite noch einmal nach. Gelöschte Daten lassen sich nicht wiederherstellen.</p>
+      <h2>3. Zweck und Rechtsgrundlage</h2>
+      <p>Die Daten dienen nur dazu, den Stand zu sichern, damit das Kind auf jedem Gerät weitermachen kann, und ihm Rückmeldung zu geben. Die Anmeldung sorgt außerdem dafür, dass nur Kinder mit einem freigeschalteten Code die Aufgaben öffnen.</p>
+      <p>Die Nutzung zu Hause ist freiwillig. Rechtsgrundlage ist insoweit die Einwilligung der Erziehungsberechtigten nach Art. 6 Abs. 1 lit. a in Verbindung mit Art. 8 DSGVO. Die Einwilligung kann jederzeit formlos gegenüber dem Verantwortlichen widerrufen werden. Die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung bleibt davon unberührt.</p>
 
-      <h2>5. Ihre Rechte</h2>
-      <p>Betroffene und Erziehungsberechtigte haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung und Widerspruch (Art. 15 bis 18 und 21 DSGVO). Weil die Daten nur auf dem eigenen Gerät liegen, lassen sie sich dort direkt ansehen und löschen. Für Fragen genügt eine formlose Nachricht an die oben genannte Adresse. Außerdem gibt es ein Beschwerderecht bei einer Datenschutzaufsichtsbehörde (Art. 77 DSGVO).</p>
+      <h2>4. Wer Zugriff hat</h2>
+      <ul class="liste">
+        <li>Das Kind sieht nur seinen eigenen Stand. Der Zugriff auf fremde Daten ist durch Regeln in der Datenbank unterbunden, nicht nur durch die Gestaltung der Oberfläche.</li>
+        <li>Die Lehrkraft kann die Daten in der Datenbank technisch einsehen. Das ist nötig, um Auskunft zu geben und Daten zu löschen. Eine Auswertung der Stände findet in der Seesternwerkstatt nicht statt, es gibt dafür keine Ansicht.</li>
+        <li>Eine Weitergabe an Dritte findet nicht statt. Es gibt keine Werbung, keinen Weiterverkauf und keine Auswertung zu anderen Zwecken.</li>
+        <li>Es gibt bewusst keine Rangliste und keinen Vergleich der Kinder untereinander.</li>
+      </ul>
+      <p>Die Anmeldung schützt die Daten der Kinder. Die Seiten selbst und ihr Programmcode sind öffentlich abrufbar, wie bei jeder Webseite. Wer den Programmcode liest, kann die Aufgaben auch ohne Code ansehen. An die Daten der Kinder kommt er dadurch nicht.</p>
 
-      <h2>6. Sicherheit</h2>
-      <p>Die Seite wird verschlüsselt über HTTPS übertragen.</p>
+      <h2>5. Eingesetzte Dienste</h2>
+      <p><b>Google Firebase</b> (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland) für Anmeldung und Datenbank. Die Datenbank ist in einer europäischen Region eingerichtet. Die Anmeldung (Firebase Authentication) verarbeitet Google nach eigenen Angaben in Rechenzentren in den USA. Dort liegt die Anmeldekennung des Kindes, die nur aus dem Zugangscode besteht. Die Programmteile von Firebase werden von Servern von Google geladen. Es besteht ein Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO.</p>
+      <p><b>GitHub Pages</b> (GitHub Inc., USA) für die Auslieferung der Seite selbst. Dort liegen nur die Programmdateien, keine Daten von Kindern.</p>
+      <p>Eine Übermittlung in Drittländer lässt sich dabei nicht vollständig ausschließen. Soweit sie stattfindet, stützt sie sich auf die Standardvertragsklauseln der Europäischen Kommission beziehungsweise den Angemessenheitsbeschluss zum EU-US Data Privacy Framework.</p>
+      <p>Andere Dienste sind nicht eingebunden. Schriften und Bilder liegen auf derselben Adresse wie die Seite. Die Seite enthält keine KI. Die Tipps von Stella sind vorbereitete Texte.</p>
+
+      <h2>6. Speicherung im Gerät</h2>
+      <p>Die Seite legt im Browser des Geräts ab:</p>
+      <ul class="liste">
+        <li>den Stand und den Vornamen, damit ohne Internetverbindung weitergearbeitet werden kann</li>
+        <li>eine zweite Kopie des zuletzt abgeglichenen Stands. Daran erkennt die Seite, was auf diesem Gerät neu dazugekommen ist.</li>
+        <li>die Anmeldung, damit das Kind beim nächsten Öffnen nicht erneut den Code eintippen muss</li>
+        <li>einen Zwischenspeicher der Datenbank (Firebase), der zuletzt geladene Daten des Kindes für Zeiten ohne Internet bereithält</li>
+      </ul>
+      <p>Diese Speicherung ist für den ausdrücklich gewünschten Dienst unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Eine Einwilligung ist dafür nicht nötig. Es werden keine Cookies zu Werbe- oder Analysezwecken gesetzt. Die Seite bittet den Browser außerdem, die Daten nicht von selbst zu löschen. Ob er das tut, entscheidet der Browser.</p>
+      <p><b>Geteilte Geräte:</b> Mit „Abmelden“ endet die Anmeldung. Der Stand des Kindes bleibt aber im Browser dieses Geräts liegen, damit es dort auch ohne Internet weitermachen kann. Angezeigt wird er nur nach Eingabe des Codes. Wer ein Gerät weitergibt, kann die Daten der Seite in den Einstellungen des Browsers löschen (Websitedaten).</p>
+
+      <h2>7. Speicherdauer und Löschen</h2>
+      <p>Die Daten eines Kindes werden gelöscht, sobald sie für den Unterricht nicht mehr gebraucht werden, spätestens am Ende des Schuljahres, in dem das Kind die Klasse verlässt. Auf Verlangen der Erziehungsberechtigten wird unverzüglich gelöscht.</p>
+      <p>Gelöscht wird dabei der Stand in der Datenbank. Das gemeinsame Konto mit dem Vornamen und das Anmeldekonto, dessen Kennung nur aus dem Zugangscode besteht, löscht die Lehrkraft gesondert. Was im Browser eines Geräts gespeichert ist (Abschnitt 6), bleibt dort, bis es auf dem Gerät gelöscht wird.</p>
+      <p>Ein Kind kann seinen Stand nicht selbst löschen. Das geht über die Lehrkraft.</p>
+
+      <h2>8. Rechte der Betroffenen</h2>
+      <p>Erziehungsberechtigte können für ihr Kind jederzeit</p>
+      <ul class="liste">
+        <li>Auskunft über die gespeicherten Daten verlangen (Art. 15 DSGVO),</li>
+        <li>Berichtigung (Art. 16), Löschung (Art. 17) oder Einschränkung der Verarbeitung (Art. 18) verlangen,</li>
+        <li>der Verarbeitung widersprechen (Art. 21) und die Einwilligung widerrufen,</li>
+        <li>die Daten in einem übertragbaren Format erhalten (Art. 20).</li>
+      </ul>
+      <p>Eine formlose Nachricht an die oben genannte Adresse genügt. Es besteht außerdem ein Beschwerderecht bei einer Datenschutzaufsichtsbehörde (Art. 77 DSGVO).</p>
+
+      <h2>9. Sicherheit</h2>
+      <p>Die Übertragung erfolgt durchgehend verschlüsselt über HTTPS. Der Zugriff auf die Datenbank ist durch Regeln in der Datenbank beschränkt. Der Zugang der Lehrkraft ist an ein persönliches Konto mit Zwei-Faktor-Authentifizierung gebunden.</p>
+      <p>Der Zugangscode des Kindes dient zugleich als Passwort. Diese Vereinfachung ist bewusst gewählt, weil die Kinder im Grundschulalter sind. Die gespeicherten Daten sind deshalb bewusst sparsam gehalten.</p>
     </section>
 
     <p><a class="knopf" href="index.html">← Zurück zur Seesternwerkstatt</a></p>

@@ -1,192 +1,140 @@
-/* Seesternwerkstatt: Speicher im Browser.
-   - Alles bleibt in localStorage dieses Browsers, je Kind ein Eintrag.
-   - Welches Kind in diesem Tab übt, steht in sessionStorage.
-   - ?vorschau=N zeigt einen Beispielstand mit N Stempeln und speichert nichts.
-   Aufbau nach dem Vorbild Zahlenschwarm, eigener Inhalt. */
+/* Seesternwerkstatt: Speicher (seit dem Konto-Umbau, 14.11.2026).
+   - Das Kind meldet sich mit dem Zugangscode des Perlentauchers an (js/konto-cloud.js).
+   - Der Stand liegt im Browser, ein Eintrag je Code (js/konto-speicher.js), und wird
+     im Hintergrund mit sw_stand/<code> in Firebase abgeglichen.
+   - Die Oberfläche arbeitet weiter synchron mit aktiv, stationStand, stationSetzen, stempelGeben.
+   - ?vorschau=N zeigt einen Beispielstand mit N Stempeln und speichert nichts. Nur auf dem eigenen Rechner
+     (localhost), auf der echten Seite wäre das eine Tür ohne Code (Spec Konto-Umbau, Entscheidung 5).
+   - Kein Löschknopf für Kinder, Zurücksetzen macht die Lehrkraft im Perlentaucher.
+   Die drei Baukasten-Module stehen in jeder Seite vor dieser Datei. */
 (() => {
   'use strict';
-  const C = SW.config;
-  const KEY = `${C.speicher.schluessel}-v${C.speicher.schema}`;
-  const WER = C.speicher.werSchluessel;
+  const C = SW.config, LK = window.LagunenKonto, A = LK.abgleich;
+  const STATIONEN = C.stationen.map(s => s.id);
+  const RUNDEN = ['spiegeln', 'band'];        /* Stationen mit gezählten Runden */
+  const STEMPEL_ID = new Set(STATIONEN.flatMap(st => C.stufen.map(stufe => `${st}:${stufe}`)));
+  const FIGUR_ID = /^[a-z0-9-]{1,30}:(leicht|mittel|knifflig)$/;
+  const LETZTE = /^(leicht|mittel|knifflig):\d{1,12}$/;
+  const zeit = x => Math.round(A.zahl(x));
 
-  const neueId = () => 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  const istObjekt = x => x !== null && typeof x === 'object' && !Array.isArray(x);
-  const klasseOk = n => C.klassen.includes(Number(n)) ? Number(n) : C.klasseStandard;
+  /* ---------- Der Stand in sw_stand/<code> ----------
+     tangram   { geloest: { 'figur:stufe': Zeitpunkt } }
+     spiegeln  { runden: { leicht, mittel, knifflig }, letzte: 'stufe:saat' }
+     band      wie spiegeln
+     stempel   { 'station:stufe': Zeitpunkt }          der erste Stempel bleibt
+     angelegt, geaendert (setzt konto-speicher.js). Kein Name, keine Klasse. */
+  function runden(roh) {
+    const r = A.karte(roh), aus = { runden: {} };
+    for (const stufe of C.stufen) { const n = Math.round(A.zahl(A.karte(r.runden)[stufe])); if (n) aus.runden[stufe] = n; }
+    if (typeof r.letzte === 'string' && LETZTE.test(r.letzte)) aus.letzte = r.letzte;
+    return aus;
+  }
+  function sauber(roh) {
+    const r = A.karte(roh), geloest = {}, stempel = {};
+    for (const [id, t] of Object.entries(A.karte(A.karte(r.tangram).geloest))) if (FIGUR_ID.test(id) && zeit(t)) geloest[id] = zeit(t);
+    for (const [id, t] of Object.entries(A.karte(r.stempel))) if (STEMPEL_ID.has(id) && zeit(t)) stempel[id] = zeit(t);
+    return { tangram: { geloest }, spiegeln: runden(r.spiegeln), band: runden(r.band), stempel };
+  }
 
-  /* Ein Kind. stationen: Stand je Station (z. B. { tangram: { geloest: {...} } }),
-     stempel: je gemeisterter Stufe { 'tangram:leicht': { am: Zeitstempel } }. */
-  const leeresKind = (name, klasse = C.klasseStandard) =>
-    ({ id: neueId(), name, klasse: klasseOk(klasse), angelegt: Date.now(), stationen: {}, stempel: {} });
-  const normalisiere = k => ({
-    id: String(k.id),
-    name: String(k.name).trim().slice(0, C.nameMaxLaenge),
-    klasse: klasseOk(k.klasse),
-    angelegt: Number(k.angelegt) || Date.now(),
-    stationen: istObjekt(k.stationen) ? k.stationen : {},
-    stempel: istObjekt(k.stempel) ? k.stempel : {}
-  });
-  const kindGueltig = k => istObjekt(k) && typeof k.id === 'string' && k.id !== '' &&
-    typeof k.name === 'string' && k.name.trim() !== '';
+  /* Zwei Stände zusammenführen (Bausteine aus js/konto-abgleich.js) */
+  function mische(basis, lokal, fern) {
+    const b = sauber(basis), l = sauber(lokal), f = sauber(fern);
+    const aus = {
+      tangram: { geloest: A.vereinigeFrueh(l.tangram.geloest, f.tangram.geloest) },
+      stempel: A.vereinigeFrueh(l.stempel, f.stempel),
+      geaendert: A.spaeter(A.karte(lokal).geaendert, A.karte(fern).geaendert)
+    };
+    for (const st of RUNDEN) {
+      const r = { runden: {} };
+      for (const stufe of C.stufen) {
+        const n = A.zuwachs(b[st].runden[stufe], l[st].runden[stufe], f[st].runden[stufe]);
+        if (n) r.runden[stufe] = n;
+      }
+      const letzte = A.hierGeaendert(b[st].letzte, l[st].letzte, f[st].letzte);
+      if (letzte) r.letzte = letzte;
+      aus[st] = r;
+    }
+    const angelegt = A.frueher(A.karte(lokal).angelegt, A.karte(fern).angelegt);
+    if (angelegt) aus.angelegt = angelegt;
+    return aus;
+  }
 
-  let kinder = [];
-  let aktivId = null;
-  /* Konnte ein vorhandener Stand nicht gelesen werden, speichert die Seite nichts,
-     damit der alte Stand nicht überschrieben wird. */
-  let ladeFehler = false;
-  let letzterFehler = null;
-  let persistGefragt = false;
+  /* Nach dem Zurücksetzen durch die Lehrkraft: leer anfangen */
+  const leer = () => ({ tangram: { geloest: {} }, spiegeln: { runden: {} }, band: { runden: {} }, stempel: {} });
+  const neuanfang = (lokal, jetzt) => ({ ...leer(), angelegt: jetzt, geaendert: jetzt });
 
-  /* ---------- Vorschau ---------- */
-  const such = new URLSearchParams(location.search);
-  const vorschauWert = such.get('vorschau');
-  const istVorschau = vorschauWert !== null && /^\d{1,3}$/.test(vorschauWert);
-
-  function vorschauKind(n) {
-    const k = leeresKind('Vorschau', such.get('klasse'));
-    k.id = 'vorschau';
+  /* ---------- Vorschau (nur localhost) ---------- */
+  const LOKAL = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  const vorschauWert = new URLSearchParams(location.search).get('vorschau');
+  const vorschauAn = LOKAL && vorschauWert !== null && /^\d{1,3}$/.test(vorschauWert);
+  function vorschauStand() {
+    if (!vorschauAn) return null;
+    const k = leer();
     let z = 0;
-    for (const st of C.stationen) for (const stufe of C.stufen) {
-      if (z++ >= n) return k;
-      k.stempel[`${st.id}:${stufe}`] = { am: Date.now() };
-      /* passender Stand, damit Sammelbuch und Auswahl in der Vorschau nicht widersprechen (Etappe 6c) */
-      const stand = k.stationen[st.id] = k.stationen[st.id] || {};
-      if (st.id === 'tangram') { stand.geloest = stand.geloest || {}; for (let i = 1; i <= 3; i++) stand.geloest[`vorschau-${stufe}-${i}:${stufe}`] = Date.now(); }
-      else { stand.runden = stand.runden || {}; stand.runden[stufe] = 1; }
+    for (const st of STATIONEN) for (const stufe of C.stufen) {
+      if (z++ >= Number(vorschauWert)) return k;
+      k.stempel[`${st}:${stufe}`] = Date.now();
+      /* passender Stand, damit Sammelbuch und Auswahl in der Vorschau nicht widersprechen */
+      if (st === 'tangram') for (let i = 1; i <= 3; i++) k.tangram.geloest[`vorschau-${stufe}-${i}:${stufe}`] = Date.now();
+      else k[st].runden[stufe] = 1;
     }
     return k;
   }
 
-  /* ---------- Laden ---------- */
-  function laden() {
-    if (istVorschau) {
-      kinder = [vorschauKind(Number(vorschauWert))];
-      aktivId = 'vorschau';
-      return;
-    }
-    let roh = null;
-    try { roh = localStorage.getItem(KEY); } catch (e) { letzterFehler = e; return; }
-    if (roh === null) return;
-    try {
-      const daten = JSON.parse(roh);
-      if (!istObjekt(daten) || !Array.isArray(daten.kinder)) throw new Error('Aufbau unbekannt');
-      kinder = daten.kinder.filter(kindGueltig).map(normalisiere);
-    } catch (e) {
-      ladeFehler = true;
-      letzterFehler = e;
-      return;
-    }
-    let gewaehlt = null;
-    try { gewaehlt = sessionStorage.getItem(WER); } catch (e) { /* dann fragt die Seite nach */ }
-    const k = kinder.length === 1 ? kinder[0] : kinder.find(x => x.id === gewaehlt);
-    if (k) aktivId = k.id;
-  }
+  /* ---------- Speicher und Cloud ---------- */
+  const S = LK.speicher({
+    schluessel: `${C.speicher.schluessel}-v${C.speicher.schema}`,
+    nameMax: C.nameMaxLaenge,
+    leer,
+    normalisiere: sauber,
+    mische,
+    vorschau: vorschauStand
+  });
 
-  /* ---------- Speichern ---------- */
-  /* Gibt true zurück, wenn gespeichert wurde (oder in der Vorschau nichts zu tun ist). */
-  function speichern() {
-    if (istVorschau) return true;
-    if (ladeFehler) return false;
-    try {
-      localStorage.setItem(KEY, JSON.stringify({ schema: C.speicher.schema, kinder }));
-    } catch (e) {
-      letzterFehler = e;
-      return false;
-    }
-    letzterFehler = null;
-    if (!persistGefragt) {
-      persistGefragt = true;
-      /* Bittet den Browser, die Daten zu behalten. Ob er zustimmt, entscheidet er selbst. */
-      try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) { /* Normalfall bleibt */ }
-    }
-    return true;
-  }
+  const cloud = LK.cloud({
+    firebase: C.firebase,
+    sammlung: C.cloud.stand,
+    sammlungKinder: C.cloud.kinder,
+    speicher: S, mische, neuanfang,
+    brauchtAngaben: false,
+    schreibPauseMs: C.cloud.schreibPauseMs,
+    nameMax: C.nameMaxLaenge
+  });
 
-  /* ---------- Kinder ---------- */
-  const gleicherName = (a, b) => a.trim().toLocaleLowerCase('de') === b.trim().toLocaleLowerCase('de');
-
-  /* Prüft einen Vornamen. null = passt, sonst ein Hinweis für das Kind. */
-  function namePruefen(name, ausserId = null) {
-    const n = String(name || '').trim();
-    if (!n) return 'Schreib bitte deinen Vornamen.';
-    if (n.length > C.nameMaxLaenge) return `Der Name ist zu lang. Höchstens ${C.nameMaxLaenge} Zeichen.`;
-    if (kinder.some(k => k.id !== ausserId && gleicherName(k.name, n))) return 'Diesen Namen gibt es hier schon. Nimm noch den ersten Buchstaben vom Nachnamen dazu.';
-    return null;
-  }
-
-  function anlegen(name, klasse) {
-    if (istVorschau) return { ok: false, grund: 'In der Vorschau kann man niemanden anlegen.' };
-    if (ladeFehler) return { ok: false, grund: 'Der alte Stand konnte nicht gelesen werden.' };
-    const grund = namePruefen(name);
-    if (grund) return { ok: false, grund, feld: 'name' };
-    if (!C.klassen.includes(Number(klasse))) return { ok: false, grund: 'Tippe bitte auf deine Klasse.', feld: 'klasse' };
-    const k = leeresKind(String(name).trim(), klasse);
-    kinder.push(k);
-    waehlen(k.id);
-    return { ok: speichern(), kind: k };
-  }
-
-  function waehlen(id) {
-    if (!kinder.some(k => k.id === id)) return false;
-    aktivId = id;
-    if (!istVorschau) { try { sessionStorage.setItem(WER, id); } catch (e) { /* nur dieser Tab */ } }
-    return true;
-  }
-
-  function abmelden() {
-    aktivId = null;
-    try { sessionStorage.removeItem(WER); } catch (e) { /* egal */ }
-  }
-
-  function aktiv() { return kinder.find(k => k.id === aktivId) || null; }
+  const aktiv = () => S.aktiv();
 
   /* Stempel für eine gemeisterte Stufe. Gibt { ok, neu } zurück. Einmal verdient, bleibt er. */
   function stempelGeben(station, stufe) {
     const k = aktiv();
-    if (!k || !C.stufen.includes(stufe)) return { ok: false, neu: false };
     const key = `${station}:${stufe}`;
+    if (!k || !STEMPEL_ID.has(key)) return { ok: false, neu: false };
     if (k.stempel[key]) return { ok: true, neu: false };
-    k.stempel[key] = { am: Date.now() };
-    return { ok: speichern(), neu: true };
+    k.stempel[key] = Date.now();
+    return { ok: S.speichern(), neu: true };
   }
 
   /* Stand einer Station lesen und ändern. aendern bekommt eine Kopie und gibt den neuen Stand zurück. */
   function stationStand(station) {
     const k = aktiv();
-    return k && istObjekt(k.stationen[station]) ? JSON.parse(JSON.stringify(k.stationen[station])) : {};
+    return k && STATIONEN.includes(station) && A.istObjekt(k[station]) ? A.kopie(k[station]) : {};
   }
   function stationSetzen(station, stand) {
     const k = aktiv();
-    if (!k || !istObjekt(stand)) return false;
-    k.stationen[station] = stand;
-    return speichern();
+    if (!k || !STATIONEN.includes(station) || !A.istObjekt(stand)) return false;
+    k[station] = station === 'tangram' ? sauber({ tangram: stand }).tangram : runden(stand);
+    return S.speichern();
   }
-
-  /* Löscht nur das aktive Kind ("Alles löschen / Neu anfangen"). In der Vorschau nichts. */
-  function aktivLoeschen() {
-    const k = aktiv();
-    if (!k || istVorschau) return false;
-    kinder = kinder.filter(x => x.id !== k.id);
-    abmelden();
-    return speichern();
-  }
-
-  laden();
 
   SW.speicher = {
-    KEY,
-    istVorschau,
-    get ladeFehler() { return ladeFehler; },
-    get letzterFehler() { return letzterFehler; },
-    kinder: () => kinder.slice(),
+    S, cloud, mische, neuanfang, sauber,
+    get istVorschau() { return S.istVorschau; },
+    get ladeFehler() { return S.ladeFehler; },
+    get letzterFehler() { return S.letzterFehler; },
     aktiv,
-    namePruefen,
-    anlegen,
-    waehlen,
-    abmelden,
-    speichern,
+    code: () => S.code(),
+    speichern: () => S.speichern(),
     stempelGeben,
     stationStand,
-    stationSetzen,
-    aktivLoeschen
+    stationSetzen
   };
 })();
