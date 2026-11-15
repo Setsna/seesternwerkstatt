@@ -698,3 +698,29 @@ dialog .knopfreihe { margin-top: var(--abstand); }
 /* Tür vor den Stationsseiten (js/tuer.js): bis zur Anmeldung ist main unsichtbar */
 .mit-tuer:not(.tuer-auf) main { visibility: hidden; }
 .tuer-moment { position: relative; z-index: 2; margin: calc(80 * var(--s)) auto 0; text-align: center; font-weight: 700; color: var(--weiss); font-size: max(19px, calc(28 * var(--s))); }
+
+/* Erwachsenenbereich wie bei den Riff-Akten (Ingo, 15.11.2026): zugeklappt eine kleine Nebelglas-Pille
+   mit Pfeil links, damit Kinder nicht hineintippen; aufgeklappt helle Platte mit dunkler Schrift. */
+.erwachsene-bereich { align-items: center; gap: 10px; }
+.erwachsene { width: 100%; }
+.erwachsene:not([open]) {
+  width: fit-content; max-width: 100%; border: 0; border-radius: 999px; background: var(--nebel);
+  -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+}
+.erwachsene summary { justify-content: flex-start; gap: 0.55em; }
+.erwachsene:not([open]) summary { padding: 0 1.1em; }
+.erwachsene:not([open]) summary h2 { font-family: inherit; font-weight: 700; font-size: 16px; }
+.erwachsene summary::after { display: none; }
+.erwachsene summary::before {
+  content: ""; flex: none; width: 0.55em; height: 0.55em; margin-right: 0.15em;
+  border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor;
+  transform: rotate(-45deg); transition: transform 0.2s ease;
+}
+.erwachsene[open] summary::before { transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { .erwachsene summary::before { transition: none; } }
+.erwachsene:not([open]) summary:focus-visible { outline-color: var(--weiss); border-radius: 999px; }
+.erwachsene[open] { background: var(--platte); color: var(--navy); border-color: var(--raster); }
+.erwachsene[open] summary:focus-visible { outline-color: var(--navy); }
+.erwachsene[open] .erw-abschnitt a { color: var(--navy); }
+.erwachsene[open] .erw-tabelle th, .erwachsene[open] .erw-tabelle td, .erwachsene[open] .erw-tabelle tr { border-color: var(--raster); }
+.erwachsene[open] .erw-tabelle thead th { color: var(--navy); }
