@@ -123,6 +123,10 @@ img, svg { display: block; max-width: 100%; }
 .mitte input[type="text"] { text-align: center; }
 .mitte .knopfreihe { justify-content: center; }
 
+/* ---------- Plattform gesperrt („Bald offen“, Lehrerbereich des Perlentauchers, 21.11.2026) ---------- */
+.zu h2 { display: flex; align-items: center; justify-content: center; gap: 0.45em; }
+.zu h2 svg { flex: none; width: 0.9em; height: 0.9em; }
+
 /* ---------- Stationen ---------- */
 .stationen-block { width: min(100%, calc(1180 * var(--s))); display: flex; flex-direction: column; align-items: center; gap: var(--abstand); }
 .stationen { list-style: none; padding: 0; margin: 0; width: 100%; display: grid; gap: calc(36 * var(--s)); grid-template-columns: 1fr; }

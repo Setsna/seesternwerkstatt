@@ -38,8 +38,13 @@
     document.body.insertBefore(p, document.querySelector('main'));
   }
 
+  /* Die Lehrkraft hat die Seesternwerkstatt gesperrt (oeffentlich/plattformen, seit 21.11.2026):
+     konto-cloud.js hat das Kind schon abgemeldet. Die Startseite zeigt „Bald offen“. */
+  const zuBaldOffen = () => { location.replace('index.html?bald=1'); };
+
   /* Gesperrt oder nicht mehr gültig: den Tab abmelden und zur Startseite */
   function pruefeErgebnis(r) {
+    if (r && r.zu) { zuBaldOffen(); return; }
     if (r && !r.ok && r.grund === cloud.TEXT.gesperrt) { SP.S.abmelden(); zurStartseite(); }
   }
 
@@ -62,5 +67,5 @@
 
   /* Neuer Tab (z. B. vom Home-Bildschirm): die Anmeldung holen, die Firebase auf dem Gerät gemerkt hat */
   moment();
-  cloud.start().then(r => { if (r.ok) aufmachen(); else zurStartseite(); }, zurStartseite);
+  cloud.start().then(r => { if (r.ok) aufmachen(); else if (r.zu) zuBaldOffen(); else zurStartseite(); }, zurStartseite);
 })();

@@ -36,7 +36,8 @@ SW.config = {
   cloud: {
     kinder: 'kinder',        /* kinder/<code>: Vorname, von der Lehrkraft angelegt (nur lesen) */
     stand: 'sw_stand',       /* sw_stand/<code>: der Stand dieses Kindes in der Seesternwerkstatt */
-    schreibPauseMs: 2500     /* so lange nach der letzten Änderung warten, dann gebündelt schreiben */
+    schreibPauseMs: 2500,    /* so lange nach der letzten Änderung warten, dann gebündelt schreiben */
+    freigabe: 'seesternwerkstatt' /* Schlüssel im Lehrerbereich des Perlentauchers (oeffentlich/plattformen), seit 21.11.2026 */
   },
 
   /* Versionsnummer der Bilder, getrennt von ?v=N für js und css. */

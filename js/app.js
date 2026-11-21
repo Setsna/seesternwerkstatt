@@ -52,6 +52,7 @@
 
   /* Ergebnis von cloud.anmelden() oder start() anzeigen */
   function nachAnmelden(r) {
+    if (!r.ok && r.zu) { ansichtZu(); return; }
     if (!r.ok) {
       if (ansicht === 'code' && app.querySelector('#code')) {
         app.querySelector('#code-form button[type="submit"]').disabled = false;
@@ -87,6 +88,27 @@
       app.querySelector('#code-hinweis').textContent = MOMENT;
       cloud.anmelden(app.querySelector('#code').value).then(nachAnmelden, () => nachAnmelden({ ok: false, grund: cloud.TEXT.sonst }));
     });
+  }
+
+  /* Die Lehrkraft hat die Seesternwerkstatt im Lehrerbereich gesperrt (oeffentlich/plattformen, js/konto-cloud.js).
+     Das Kind ist schon wieder abgemeldet, sein Stand bleibt auf dem Gerät und in der Datenbank.
+     Text von Ingo gewählt am 21.11.2026 (cloud.TEXT.zu): „Bald offen!“ als Überschrift, der Rest darunter.
+     Gebaut wie in der Kieselwaage (v=7). Die Stationsseiten schicken in diesem Fall hierher (js/tuer.js, ?bald=1). */
+  function ansichtZu() {
+    const text = cloud.TEXT.zu;
+    const i = text.indexOf('! ');
+    const titel = i > 0 ? text.slice(0, i + 1) : '';
+    const rest = i > 0 ? text.slice(i + 2) : text;
+    zeigen(`
+      ${kopf('Willkommen!')}
+      <section class="fenster mitte zu" aria-labelledby="h-zu">
+        <h2 id="h-zu">${titel ? SCHLOSS + esc(titel) : '<span class="nurvorlesen">Bald offen</span>'}</h2>
+        <p>${esc(rest)}</p>
+        <p class="knopfreihe"><button type="button" class="knopf haupt" data-aktion="abmelden">Abmelden</button></p>
+      </section>`, 'Bald offen');
+    ansicht = 'zu';
+    /* ?zu=… und ?bald=1 aus der Adresse nehmen: nach dem nächsten Anmelden geht es zur Startseite */
+    try { history.replaceState(null, '', location.pathname); } catch (e) { /* egal */ }
   }
 
   /* Zeile auf der Startseite, wenn der Stand gerade nicht in der Datenbank ankommt */
@@ -184,9 +206,11 @@
       /* Ein gescannter Code hat Vorrang vor dem Kind, das in diesem Tab noch angemeldet ist. */
       if (S.aktiv() && S.code() !== qr) S.S.abmelden();
       if (S.aktiv()) ansichtStart(); else ansichtCode(MOMENT);
-      cloud.anmelden(qr).then(r => { if (darfWechseln()) { if (!r.ok) ansichtCode(r.grund); else nachAnmelden(r); } }, () => {});
+      cloud.anmelden(qr).then(r => { if (r.zu) ansichtZu(); else if (darfWechseln()) { if (!r.ok) ansichtCode(r.grund); else nachAnmelden(r); } }, () => {});
       return;
     }
+    /* Eine Stationsseite hat „gesperrt“ bekommen und das Kind schon abgemeldet (js/tuer.js) */
+    if (new URLSearchParams(location.search).get('bald') === '1' && !S.aktiv()) { ansichtZu(); return; }
     /* Kommt das Kind von einer Station (?zu=…) und kennt der Tab es schon: gleich zurück */
     if (S.aktiv() && weiterNachAnmelden()) return;
     if (S.aktiv()) ansichtStart(); else ansichtCode(MOMENT);
@@ -194,6 +218,8 @@
     const gemerkt = S.code();
     cloud.start().then(r => {
       if (r.ok) { if (darfWechseln()) nachAnmelden(r); return null; }
+      /* Gesperrt: wechseln, denn das Kind ist schon abgemeldet */
+      if (r.zu) { ansichtZu(); return null; }
       if (ansicht === 'code' && app.querySelector('#code-hinweis').textContent === MOMENT) {
         app.querySelector('#code-hinweis').textContent = spur ? 'Der Code wurde nicht ganz gelesen. Tippe ihn bitte ein.' : (r.grund || '');
       }
@@ -202,6 +228,7 @@
       return gemerkt && S.code() === gemerkt && cloud.aktiv() ? cloud.anmelden(gemerkt) : null;
     }).then(r => {
       if (!r) return;
+      if (r.zu) { ansichtZu(); return; }
       if (r.ok) { if (ansicht === 'start') ansichtStart(); return; }
       /* Die Lehrkraft hat den Code gesperrt: nicht auf dem Gerät weiterarbeiten lassen */
       if (r.grund === cloud.TEXT.gesperrt && S.aktiv()) { S.S.abmelden(); if (darfWechseln()) ansichtCode(r.grund); }
